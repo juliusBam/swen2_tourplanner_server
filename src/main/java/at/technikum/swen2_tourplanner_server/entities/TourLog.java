@@ -2,12 +2,11 @@ package at.technikum.swen2_tourplanner_server.entities;
 
 import at.technikum.swen2_tourplanner_server.entities.enums.Difficulty;
 import at.technikum.swen2_tourplanner_server.entities.enums.Rating;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
+import java.util.List;
 
 @Entity(name = "tour_log")
 public class TourLog {
@@ -40,6 +39,10 @@ public class TourLog {
     @NotNull(message = "Tour log rating cannot be null")
     @NotBlank
     private Rating rating;
+
+    @ManyToOne
+    @JoinColumn(name="tour_id", nullable=false)
+    private Tour tour;
 
     public TourLog() {}
 

@@ -27,33 +27,29 @@ public class Tour {
     //@Column(name = "start_stop", nullable = false)
     //@NotNull(message = "Start cannot be null")
     //@NotBlank(message = "Reference to start cannot be empty")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Stop start;
 
     //@Column(name = "end_stop", nullable = false)
     //@NotNull(message = "End cannot be null")
     //@NotBlank(message = "Reference to end cannot be empty")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Stop end;
 
     @Column(name = "vehicle", nullable = false)
     @NotNull(message = "Vehicle cannot be null")
-    @NotBlank(message = "Reference to vehicle cannot be empty")
     @Enumerated(EnumType.ORDINAL)
     private Vehicle vehicle;
 
     @Column(name = "estimated_time_minutes", nullable = false)
     @NotNull(message = "Estimated time cannot be null")
-    @NotBlank(message = "Estimated time cannot be empty")
     private Long estimatedTimeMinutes;
 
     @Column(name = "distance_meters", nullable = false)
     @NotNull(message = "Distance cannot be null")
-    @NotBlank(message = "Distance cannot be empty")
     private Long tourDistanceMeters;
 
-    @Column(name = "tour_logs", nullable = true)
-    @OneToMany
+    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
     private List<TourLog> logs;
     //endregion
 

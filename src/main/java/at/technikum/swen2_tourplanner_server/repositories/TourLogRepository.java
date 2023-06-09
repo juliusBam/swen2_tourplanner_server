@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface TourLogRepository extends JpaRepository<TourLog, Long> {
-
-    public List<TourLog> findByTourId(Long id);
+    public List<TourLog> findTourLogsByTourId(Long id);
 
 }

@@ -3,9 +3,11 @@ package at.technikum.swen2_tourplanner_server.services;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.repositories.TourLogRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class TourLogService {
 
     private final TourLogRepository tourLogRepository;
@@ -19,7 +21,7 @@ public class TourLogService {
     }
 
     public List<TourLog> getAllByTourId(Long id) {
-        return this.tourLogRepository.findByTourId(id);
+        return this.tourLogRepository.findTourLogsByTourId(id);
     }
 
     public Long createTourLog(TourLog newTourLog) {

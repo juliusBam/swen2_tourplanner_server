@@ -2,10 +2,12 @@ package at.technikum.swen2_tourplanner_server.services;
 
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.repositories.TourRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class TourServiceBase {
     protected final TourRepository tourRepository;
 

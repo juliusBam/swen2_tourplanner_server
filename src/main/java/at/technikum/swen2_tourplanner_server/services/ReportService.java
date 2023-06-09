@@ -2,7 +2,9 @@ package at.technikum.swen2_tourplanner_server.services;
 
 import at.technikum.swen2_tourplanner_server.models.TourReport;
 import at.technikum.swen2_tourplanner_server.repositories.TourRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ReportService {
     private final TourServiceBase tourService;
 
