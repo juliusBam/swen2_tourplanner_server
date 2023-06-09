@@ -3,8 +3,10 @@ package at.technikum.swen2_tourplanner_server.entities;
 import at.technikum.swen2_tourplanner_server.entities.enums.Difficulty;
 import at.technikum.swen2_tourplanner_server.entities.enums.Rating;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -15,29 +17,27 @@ public class TourLog {
     @Column(name = "tour_log_id")
     private Long id;
 
-    @Column(name = "time_stamp", nullable = false)
+    @Column(name = "time_stamp", nullable = false, precision = 10)
     @NotNull(message = "Timestamp cannot be null")
-    @NotBlank(message = "Timestamp cannot be empty")
     private Long timeStamp;
 
     @Column(name = "tour_log_comment", nullable = false, length = 500)
     @NotNull(message = "Tour log comment cannot be null")
     @NotBlank(message = "Tour log comment cannot be empty")
+    @Size(min = 5, max = 500, message = "A valid tour log comment must contain more than 5 characters and less than 500")
     private String comment;
 
     @Column(name = "tour_log_difficulty", nullable = false)
     @NotNull(message = "Tour log difficulty cannot be null")
-    @NotBlank(message = "Tour log difficulty cannot be empty")
     private Difficulty difficulty;
 
     @Column(name = "tour_log_total_time_minutes", nullable = false)
     @NotNull(message = "Tour log total time cannot be null")
-    @NotBlank(message = "Tour log total time cannot be empty")
+    @Min(value = 1, message = "The total time in minutes cannot be 0")
     private Long totalTimeMinutes;
 
     @Column(name = "tour_log_rating", nullable = false)
     @NotNull(message = "Tour log rating cannot be null")
-    @NotBlank
     private Rating rating;
 
     @ManyToOne

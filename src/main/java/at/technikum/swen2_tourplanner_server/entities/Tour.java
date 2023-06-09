@@ -2,8 +2,10 @@ package at.technikum.swen2_tourplanner_server.entities;
 
 import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -19,21 +21,17 @@ public class Tour {
     @Column(name = "name", nullable = false, unique = true, length = 50)
     @NotNull(message = "Tour name cannot be null")
     @NotBlank(message = "Tour name cannot be empty")
+    @Size(min = 5, max = 50, message = "A valid name must contain more than 5 characters and less than 50")
     private String name;
 
     @Column(name = "description", nullable = true, length = 500)
+    @Size(min = 10, max = 50, message = "A valid description must contain more than 10 characters and less than 500")
     private String description;
 
-    //@Column(name = "start_stop", nullable = false)
-    //@NotNull(message = "Start cannot be null")
-    //@NotBlank(message = "Reference to start cannot be empty")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private Stop start;
 
-    //@Column(name = "end_stop", nullable = false)
-    //@NotNull(message = "End cannot be null")
-    //@NotBlank(message = "Reference to end cannot be empty")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private Stop end;
 
     @Column(name = "vehicle", nullable = false)
@@ -43,10 +41,12 @@ public class Tour {
 
     @Column(name = "estimated_time_minutes", nullable = false)
     @NotNull(message = "Estimated time cannot be null")
+    @Min(value = 1, message = "Estimated time in minutes has to be at least 1")
     private Long estimatedTimeMinutes;
 
     @Column(name = "distance_meters", nullable = false)
     @NotNull(message = "Distance cannot be null")
+    @Min(value = 1, message = "Tour distance in meters has to be at least 1")
     private Long tourDistanceMeters;
 
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)

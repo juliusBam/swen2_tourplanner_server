@@ -1,7 +1,7 @@
 package at.technikum.swen2_tourplanner_server.services;
 
-import at.technikum.swen2_tourplanner_server.entities.Stop;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
+import at.technikum.swen2_tourplanner_server.exceptions.TourCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.repositories.TourRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -18,12 +18,12 @@ public class TourServiceCreate extends TourServiceBase {
 
     @Transactional
     public Long createTour(Tour newTour) {
+        //validation
+        if (newTour.getStart().getCoordinate().equals(newTour.getEnd().getCoordinate())) {
+            throw new TourCreationErrorExc("Tour start and tour end have to be different");
+        }
+
         Long tourId = this.tourRepository.save(newTour).getId();
-
-        //https://www.stackchief.com/blog/One%20To%20Many%20Example%20%7C%20Spring%20Data%20JPA
-        //this.stopService.createStop(newTour.getStart());
-
-        //this.stopService.createStop(newTour.getEnd());
 
         return tourId;
     }

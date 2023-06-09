@@ -31,7 +31,7 @@ public class TourController {
     @GetMapping("/{id}")
     Tour getTour(@PathVariable Long id) {
         return tourServiceCreate.getById(id).orElseThrow(
-                () -> new TourNotFoundExc(id)
+                () -> new TourNotFoundExc("tour not found")
         );
     }
 
