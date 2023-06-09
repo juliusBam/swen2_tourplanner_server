@@ -6,6 +6,7 @@ import at.technikum.swen2_tourplanner_server.repositories.StopRepository;
 import at.technikum.swen2_tourplanner_server.repositories.TourRepository;
 import at.technikum.swen2_tourplanner_server.services.StopService;
 import at.technikum.swen2_tourplanner_server.services.TourServiceCreate;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public class TourController {
 
     //region Post Routes
     @PostMapping("")
-    Long createTour(@RequestBody Tour newTour) {
+    Long createTour(@RequestBody @Valid Tour newTour) {
         return tourServiceCreate.createTour(newTour);
     }
 
