@@ -1,5 +1,6 @@
 package at.technikum.swen2_tourplanner_server.controllers;
 
+import at.technikum.swen2_tourplanner_server.Logging;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.repositories.TourLogRepository;
 import at.technikum.swen2_tourplanner_server.services.TourLogService;
@@ -9,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/tourlog")
-public class TourLogController {
+public class TourLogController extends Logging {
 
     private final TourLogService tourLogService;
 
@@ -22,14 +23,15 @@ public class TourLogController {
 
     //region Get Routes
     @GetMapping("/{id}")
-    List<TourLog> getTour(@PathVariable Long id) {
-        return tourLogService.getAllByTourId(id);
+    List<TourLog> getTourLogByTourId(@PathVariable Long tourId) {
+        return tourLogService.getAllByTourId(tourId);
     }
     //endregion
 
     //region Post Routes
     @PostMapping("")
     Long createTourLog(@RequestBody TourLog newTourLog) {
+        this.logger.info("Received post req for new tour log for tour id: " + newTourLog.getTour().getId());
         return tourLogService.createTourLog(newTourLog);
     }
     //endregion

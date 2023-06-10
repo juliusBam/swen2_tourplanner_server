@@ -74,6 +74,10 @@ public class TourLog {
     public Difficulty getDifficulty() {
         return difficulty;
     }
+
+    public Tour getTour() {
+        return tour;
+    }
     //endregion
 
     //region setters
@@ -95,6 +99,10 @@ public class TourLog {
 
     public void setRating(Rating rating) {
         this.rating = rating;
+    }
+
+    public void setTour(Tour tour) {
+        this.tour = tour;
     }
     //endregion
 }
