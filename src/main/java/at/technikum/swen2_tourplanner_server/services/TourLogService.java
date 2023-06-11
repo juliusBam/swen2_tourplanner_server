@@ -32,7 +32,6 @@ public class TourLogService {
         return this.tourLogRepository.findTourLogsByTourId(id);
     }
 
-    @Lock(LockModeType.OPTIMISTIC)
     public Long createTourLog(CreateTourLogReq newTourLogReq) {
 
         Long linkedTourId = newTourLogReq.getTourId();

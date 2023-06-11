@@ -1,7 +1,9 @@
 package at.technikum.swen2_tourplanner_server.services;
 
 import at.technikum.swen2_tourplanner_server.entities.Tour;
+import at.technikum.swen2_tourplanner_server.exceptions.TourCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.repositories.TourRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,4 +44,20 @@ public class TourServiceBase {
         return this.tourRepository.findById(id);
     }
 
+    public Optional<Tour> getByIdWithTours(Long id) {
+
+        //todo add the implementation with the join
+
+        return Optional.empty();
+    }
+
+    @Transactional
+    public Long createTour(Tour newTour) {
+
+        if (newTour.getStart().getCoordinate().equals(newTour.getEnd().getCoordinate())) {
+            throw new TourCreationErrorExc("Tour start and tour end have to be different");
+        }
+
+        return this.tourRepository.save(newTour).getId();
+    }
 }

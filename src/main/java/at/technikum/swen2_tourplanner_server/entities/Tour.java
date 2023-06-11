@@ -54,6 +54,9 @@ public class Tour implements Serializable {
     @NotNull(message = "The tour image has to be set")
     @NotBlank(message = "The tour image content cannot be empty")
     private String base64Image;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "tour")
+    private List<TourLog> logs;
     //endregion
 
     //region constructors
@@ -61,7 +64,7 @@ public class Tour implements Serializable {
 
     }
 
-    Tour(String name, String description, Vehicle vehicle, Stop start, Stop end, Long estimatedTimeMinutes, Long tourDistanceMeters, String tourImage) {
+    Tour(String name, String description, Vehicle vehicle, Stop start, Stop end, Long estimatedTimeMinutes, Long tourDistanceMeters, String tourImage, List<TourLog> logs)  {
         this.name = name;
         this.description = description;
         this.vehicle = vehicle;
@@ -70,6 +73,7 @@ public class Tour implements Serializable {
         this.estimatedTimeMinutes = estimatedTimeMinutes;
         this.tourDistanceMeters = tourDistanceMeters;
         this.base64Image = tourImage;
+        this.logs = logs;
     }
     //endregion
 
@@ -109,6 +113,10 @@ public class Tour implements Serializable {
     public String getName() {
         return name;
     }
+
+    public List<TourLog> getLogs() {
+        return this.logs;
+    }
     //endregion
 
     //region setters
@@ -118,6 +126,10 @@ public class Tour implements Serializable {
 
     public void setEnd(Stop end) {
         this.end = end;
+    }
+
+    public void setLogs(List<TourLog> newLogs) {
+        this.logs = logs;
     }
     //endregion
 

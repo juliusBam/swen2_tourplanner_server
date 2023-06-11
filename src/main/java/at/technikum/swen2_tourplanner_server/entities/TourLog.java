@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Entity(name = "tour_log")
 public class TourLog implements Serializable {
@@ -41,8 +40,8 @@ public class TourLog implements Serializable {
     @NotNull(message = "Tour log rating cannot be null")
     private Rating rating;
 
-    @ManyToOne
-    @JoinColumn(name="tour_id", nullable=false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "tour_id")
     private Tour tour;
 
     public TourLog() {}
@@ -76,10 +75,6 @@ public class TourLog implements Serializable {
     public Difficulty getDifficulty() {
         return difficulty;
     }
-
-    public Tour getTour() {
-        return tour;
-    }
     //endregion
 
     //region setters
@@ -101,10 +96,6 @@ public class TourLog implements Serializable {
 
     public void setRating(Rating rating) {
         this.rating = rating;
-    }
-
-    public void setTour(Tour tour) {
-        this.tour = tour;
     }
     //endregion
 }
