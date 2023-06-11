@@ -39,7 +39,7 @@ public class TourServiceBase {
     }
 
     public Optional<Tour> getById(Long id) {
-        return Optional.empty();
+        return this.tourRepository.findById(id);
     }
 
 }

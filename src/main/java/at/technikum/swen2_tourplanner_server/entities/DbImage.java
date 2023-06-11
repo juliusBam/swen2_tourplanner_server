@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.io.Serializable;
+
 
 @Entity(name = "images")
-public class DbImage {
+public class DbImage implements Serializable {
     @Id
     @GeneratedValue
     @Column(name = "image_id")

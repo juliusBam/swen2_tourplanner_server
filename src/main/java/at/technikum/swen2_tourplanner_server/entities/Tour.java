@@ -7,10 +7,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity(name = "tours")
-public class Tour {
+public class Tour implements Serializable {
 
     //region fields
     @Id
@@ -49,8 +50,10 @@ public class Tour {
     @Min(value = 1, message = "Tour distance in meters has to be at least 1")
     private Long tourDistanceMeters;
 
-    @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL)
-    private List<TourLog> logs;
+    @Column(name = "tour_image", nullable = false)
+    @NotNull(message = "The tour image has to be set")
+    @NotBlank(message = "The tour image content cannot be empty")
+    private String base64Image;
     //endregion
 
     //region constructors
@@ -58,7 +61,7 @@ public class Tour {
 
     }
 
-    Tour(String name, String description, Vehicle vehicle, Stop start, Stop end, Long estimatedTimeMinutes, Long tourDistanceMeters, List<TourLog> logs) {
+    Tour(String name, String description, Vehicle vehicle, Stop start, Stop end, Long estimatedTimeMinutes, Long tourDistanceMeters, String tourImage) {
         this.name = name;
         this.description = description;
         this.vehicle = vehicle;
@@ -66,7 +69,7 @@ public class Tour {
         this.end = end;
         this.estimatedTimeMinutes = estimatedTimeMinutes;
         this.tourDistanceMeters = tourDistanceMeters;
-        this.logs = logs;
+        this.base64Image = tourImage;
     }
     //endregion
 
@@ -87,6 +90,10 @@ public class Tour {
         return vehicle;
     }
 
+    public String getBase64Image() {
+        return base64Image;
+    }
+
     public Long getEstimatedTimeMinutes() {
         return estimatedTimeMinutes;
     }
@@ -102,17 +109,9 @@ public class Tour {
     public String getName() {
         return name;
     }
-
-    public List<TourLog> getLogs() {
-        return logs;
-    }
     //endregion
 
     //region setters
-    public void setLogs(List<TourLog> logs) {
-        this.logs = logs;
-    }
-
     public void setStart(Stop start) {
         this.start = start;
     }

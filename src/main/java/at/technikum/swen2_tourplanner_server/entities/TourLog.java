@@ -8,10 +8,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity(name = "tour_log")
-public class TourLog {
+public class TourLog implements Serializable {
     @Id
     @GeneratedValue
     @Column(name = "tour_log_id")
@@ -46,12 +47,13 @@ public class TourLog {
 
     public TourLog() {}
 
-    public TourLog(Long timeStamp, String comment, Difficulty difficulty, Long totalTimeMinutes, Rating rating) {
+    public TourLog(Long timeStamp, String comment, Difficulty difficulty, Long totalTimeMinutes, Rating rating, Tour tour) {
         this.timeStamp = timeStamp;
         this.comment = comment;
         this.difficulty = difficulty;
         this.totalTimeMinutes = totalTimeMinutes;
         this.rating = rating;
+        this.tour = tour;
     }
 
     //region getters
