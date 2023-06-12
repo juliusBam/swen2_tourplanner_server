@@ -5,8 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-@Entity(name = "stops")
-public class Stop {
+@Entity(name = "locations")
+public class Location {
 
     @Id
     @GeneratedValue
@@ -14,19 +14,19 @@ public class Stop {
     private Long id;
 
     @Column(name = "coordinates", nullable = false)
-    @NotNull(message = "Stop coordinates cannot be null")
-    @NotBlank(message = "Stop coordinates cannot be empty")
+    @NotNull(message = "Location coordinates cannot be null")
+    @NotBlank(message = "Location coordinates cannot be empty")
     private String coordinate;
 
     @Column(name = "stop_label", nullable = false, length = 100)
-    @NotNull(message = "Stop label cannot be null")
-    @NotBlank(message = "Stop label cannot be empty")
-    @Size(max = 100, message = "A valid stop label must contain less than 100 characters")
+    @NotNull(message = "Location label cannot be null")
+    @NotBlank(message = "Location label cannot be empty")
+    @Size(max = 100, message = "A valid Location label must contain less than 100 characters")
     private String label;
 
-    public Stop() {}
+    public Location() {}
 
-    public Stop(String coordinate, String label) {
+    public Location(String coordinate, String label) {
         this.coordinate = coordinate;
         this.label = label;
     }

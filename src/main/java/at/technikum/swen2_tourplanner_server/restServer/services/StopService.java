@@ -1,7 +1,7 @@
-package at.technikum.swen2_tourplanner_server.services;
+package at.technikum.swen2_tourplanner_server.restServer.services;
 
-import at.technikum.swen2_tourplanner_server.entities.Stop;
-import at.technikum.swen2_tourplanner_server.repositories.StopRepository;
+import at.technikum.swen2_tourplanner_server.entities.Location;
+import at.technikum.swen2_tourplanner_server.restServer.repositories.StopRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +16,8 @@ public class StopService {
     }
 
     @Transactional
-    public Stop createStop(Stop newStop) {
-        return this.stopRepository.save(newStop);
+    public Location createStop(Location newLocation) {
+        return this.stopRepository.save(newLocation);
     }
 
 }

@@ -1,4 +1,4 @@
-package at.technikum.swen2_tourplanner_server.repositories;
+package at.technikum.swen2_tourplanner_server.restServer.repositories;
 
 import at.technikum.swen2_tourplanner_server.entities.DbImage;
 import org.hibernate.mapping.Map;

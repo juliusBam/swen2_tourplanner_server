@@ -1,9 +1,9 @@
-package at.technikum.swen2_tourplanner_server.services;
+package at.technikum.swen2_tourplanner_server.restServer.services;
 
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
-import at.technikum.swen2_tourplanner_server.dto.requests.CreateTourLogReq;
-import at.technikum.swen2_tourplanner_server.repositories.TourLogRepository;
+import at.technikum.swen2_tourplanner_server.dto.requests.CreateTourLogReqModel;
+import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,16 +19,12 @@ public class TourLogService {
         this.tourService = tourService;
     }
 
-    public List<TourLog> getAll() {
-        return this.tourLogRepository.findAll();
-    }
-
     public List<TourLog> getAllByTourId(Long id) {
 
         return this.tourLogRepository.findTourLogsByTourId(id);
     }
 
-    public Long createTourLog(CreateTourLogReq newTourLogReq) {
+    public Long createTourLog(CreateTourLogReqModel newTourLogReq) {
 
         Long linkedTourId = newTourLogReq.getTourId();
 
@@ -39,5 +35,18 @@ public class TourLogService {
                                             newTourLogReq.getRating(), linkedTour);
 
         return this.tourLogRepository.save(newTourLog).getId();
+    }
+
+    public Long updateTourLog(TourLog updatedTourLog) {
+
+        //if tour log is not present anymore do not allow an update
+        this.tourLogRepository.findById(updatedTourLog.getId()).orElseThrow();
+
+        return this.tourLogRepository.save(updatedTourLog).getId();
+
+    }
+
+    public void deleteTourLog(Long tourId) {
+        this.tourLogRepository.deleteById(tourId);
     }
 }

@@ -1,8 +1,8 @@
-package at.technikum.swen2_tourplanner_server.controllers;
+package at.technikum.swen2_tourplanner_server.restServer.controllers;
 
 import at.technikum.swen2_tourplanner_server.entities.DbImage;
-import at.technikum.swen2_tourplanner_server.repositories.ImageRepository;
-import at.technikum.swen2_tourplanner_server.services.ImageService;
+import at.technikum.swen2_tourplanner_server.restServer.repositories.ImageRepository;
+import at.technikum.swen2_tourplanner_server.restServer.services.ImageService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

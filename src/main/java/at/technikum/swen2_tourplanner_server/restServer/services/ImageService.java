@@ -1,7 +1,7 @@
-package at.technikum.swen2_tourplanner_server.services;
+package at.technikum.swen2_tourplanner_server.restServer.services;
 
 import at.technikum.swen2_tourplanner_server.entities.DbImage;
-import at.technikum.swen2_tourplanner_server.repositories.ImageRepository;
+import at.technikum.swen2_tourplanner_server.restServer.repositories.ImageRepository;
 import org.springframework.stereotype.Service;
 
 @Service

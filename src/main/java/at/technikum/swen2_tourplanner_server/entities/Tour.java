@@ -30,10 +30,10 @@ public class Tour implements Serializable {
     private String description;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private Stop start;
+    private Location start;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private Stop end;
+    private Location end;
 
     @Column(name = "vehicle", nullable = false)
     @NotNull(message = "Vehicle cannot be null")
@@ -43,17 +43,16 @@ public class Tour implements Serializable {
     @Column(name = "estimated_time_minutes", nullable = false)
     @NotNull(message = "Estimated time cannot be null")
     @Min(value = 1, message = "Estimated time in minutes has to be at least 1")
-    private Long estimatedTimeMinutes;
+    private Long estimatedTimeSeconds;
 
     @Column(name = "distance_meters", nullable = false)
     @NotNull(message = "Distance cannot be null")
     @Min(value = 1, message = "Tour distance in meters has to be at least 1")
-    private Long tourDistanceMeters;
+    private Long tourDistanceKilometers;
 
-    @Column(name = "tour_image", nullable = false)
+    @Column(name = "tour_image", nullable = false, columnDefinition = "BYTEA")
     @NotNull(message = "The tour image has to be set")
-    @NotBlank(message = "The tour image content cannot be empty")
-    private String base64Image;
+    private byte[] base64Image;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "tour")
     private List<TourLog> logs;
@@ -64,14 +63,14 @@ public class Tour implements Serializable {
 
     }
 
-    Tour(String name, String description, Vehicle vehicle, Stop start, Stop end, Long estimatedTimeMinutes, Long tourDistanceMeters, String tourImage, List<TourLog> logs)  {
+    public Tour(String name, String description, Vehicle vehicle, Location start, Location end, Long estimatedTimeSeconds, Long tourDistanceKilometers, byte[] tourImage, List<TourLog> logs)  {
         this.name = name;
         this.description = description;
         this.vehicle = vehicle;
         this.start = start;
         this.end = end;
-        this.estimatedTimeMinutes = estimatedTimeMinutes;
-        this.tourDistanceMeters = tourDistanceMeters;
+        this.estimatedTimeSeconds = estimatedTimeSeconds;
+        this.tourDistanceKilometers = tourDistanceKilometers;
         this.base64Image = tourImage;
         this.logs = logs;
     }
@@ -82,11 +81,11 @@ public class Tour implements Serializable {
         return id;
     }
 
-    public Stop getStart() {
+    public Location getStart() {
         return start;
     }
 
-    public Stop getEnd() {
+    public Location getEnd() {
         return end;
     }
 
@@ -94,16 +93,16 @@ public class Tour implements Serializable {
         return vehicle;
     }
 
-    public String getBase64Image() {
+    public byte[] getBase64Image() {
         return base64Image;
     }
 
-    public Long getEstimatedTimeMinutes() {
-        return estimatedTimeMinutes;
+    public Long getEstimatedTimeSeconds() {
+        return estimatedTimeSeconds;
     }
 
-    public Long getTourDistanceMeters() {
-        return tourDistanceMeters;
+    public Long getTourDistanceKilometers() {
+        return tourDistanceKilometers;
     }
 
     public String getDescription() {
@@ -120,16 +119,12 @@ public class Tour implements Serializable {
     //endregion
 
     //region setters
-    public void setStart(Stop start) {
+    public void setStart(Location start) {
         this.start = start;
     }
 
-    public void setEnd(Stop end) {
-        this.end = end;
-    }
-
-    public void setLogs(List<TourLog> newLogs) {
-        this.logs = logs;
+    public void setId(Long id) {
+        this.id = id;
     }
     //endregion
 

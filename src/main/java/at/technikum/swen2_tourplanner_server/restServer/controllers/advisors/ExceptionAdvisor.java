@@ -1,4 +1,4 @@
-package at.technikum.swen2_tourplanner_server.controllers.advisors;
+package at.technikum.swen2_tourplanner_server.restServer.controllers.advisors;
 
 import at.technikum.swen2_tourplanner_server.exceptions.TourCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.exceptions.TourNotFoundExc;
