@@ -3,10 +3,8 @@ package at.technikum.swen2_tourplanner_server.controllers;
 import at.technikum.swen2_tourplanner_server.Logging;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.exceptions.TourNotFoundExc;
-import at.technikum.swen2_tourplanner_server.repositories.StopRepository;
 import at.technikum.swen2_tourplanner_server.repositories.TourRepository;
-import at.technikum.swen2_tourplanner_server.services.StopService;
-import at.technikum.swen2_tourplanner_server.services.TourServiceBase;
+import at.technikum.swen2_tourplanner_server.services.TourService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +14,10 @@ import java.util.List;
 @RequestMapping("/tour")
 public class TourController extends Logging {
 
-    private final TourServiceBase tourServiceCreate;
+    private final TourService tourServiceCreate;
 
     TourController(TourRepository tourRepository) {
-        this.tourServiceCreate = new TourServiceBase(tourRepository);
+        this.tourServiceCreate = new TourService(tourRepository);
     }
 
     //Register the entry points of the REST SERVER
@@ -33,13 +31,6 @@ public class TourController extends Logging {
     @GetMapping("/{id}")
     Tour getTour(@PathVariable Long id) {
         return tourServiceCreate.getById(id).orElseThrow(
-                () -> new TourNotFoundExc("tour not found")
-        );
-    }
-
-    @GetMapping("WithLogs/{id}")
-    Tour getTourWithLogs(@PathVariable Long id) {
-        return this.tourServiceCreate.getByIdWithTours(id).orElseThrow(
                 () -> new TourNotFoundExc("tour not found")
         );
     }

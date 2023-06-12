@@ -7,6 +7,4 @@ import java.util.Optional;
 
 public interface TourRepository extends JpaRepository<Tour, Long> {
 
-    //todo add query to join the tour logs
-
 }

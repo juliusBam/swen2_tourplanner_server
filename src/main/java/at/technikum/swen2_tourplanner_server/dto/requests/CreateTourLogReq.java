@@ -1,4 +1,4 @@
-package at.technikum.swen2_tourplanner_server.models.requests;
+package at.technikum.swen2_tourplanner_server.dto.requests;
 
 import at.technikum.swen2_tourplanner_server.entities.enums.Difficulty;
 import at.technikum.swen2_tourplanner_server.entities.enums.Rating;

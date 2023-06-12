@@ -2,25 +2,21 @@ package at.technikum.swen2_tourplanner_server.services;
 
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
-import at.technikum.swen2_tourplanner_server.models.requests.CreateTourLogReq;
+import at.technikum.swen2_tourplanner_server.dto.requests.CreateTourLogReq;
 import at.technikum.swen2_tourplanner_server.repositories.TourLogRepository;
-import at.technikum.swen2_tourplanner_server.repositories.TourRepository;
-import jakarta.persistence.LockModeType;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TourLogService {
 
     private final TourLogRepository tourLogRepository;
-    private final TourServiceBase tourServiceBase;
+    private final TourService tourService;
 
-    public TourLogService(TourLogRepository tourLogRepository, TourServiceBase tourServiceBase) {
+    public TourLogService(TourLogRepository tourLogRepository, TourService tourService) {
         this.tourLogRepository = tourLogRepository;
-        this.tourServiceBase = tourServiceBase;
+        this.tourService = tourService;
     }
 
     public List<TourLog> getAll() {
@@ -36,7 +32,7 @@ public class TourLogService {
 
         Long linkedTourId = newTourLogReq.getTourId();
 
-        Tour linkedTour = this.tourServiceBase.getById(linkedTourId).orElseThrow();
+        Tour linkedTour = this.tourService.getById(linkedTourId).orElseThrow();
 
         TourLog newTourLog = new TourLog(newTourLogReq.getTimeStamp(), newTourLogReq.getComment(),
                                             newTourLogReq.getDifficulty(), newTourLogReq.getTotalTimeMinutes(),

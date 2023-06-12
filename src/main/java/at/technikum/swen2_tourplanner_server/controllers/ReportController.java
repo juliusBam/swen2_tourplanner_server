@@ -1,6 +1,6 @@
 package at.technikum.swen2_tourplanner_server.controllers;
 
-import at.technikum.swen2_tourplanner_server.models.TourReport;
+import at.technikum.swen2_tourplanner_server.dto.TourReport;
 import at.technikum.swen2_tourplanner_server.repositories.TourRepository;
 import at.technikum.swen2_tourplanner_server.services.ReportService;
 import org.springframework.web.bind.annotation.GetMapping;

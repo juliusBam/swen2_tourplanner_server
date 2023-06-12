@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class TourServiceBase {
+public class TourService {
     protected final TourRepository tourRepository;
 
-    public TourServiceBase(TourRepository tourRepository) {
+    public TourService(TourRepository tourRepository) {
         this.tourRepository = tourRepository;
     }
 
@@ -42,13 +42,6 @@ public class TourServiceBase {
 
     public Optional<Tour> getById(Long id) {
         return this.tourRepository.findById(id);
-    }
-
-    public Optional<Tour> getByIdWithTours(Long id) {
-
-        //todo add the implementation with the join
-
-        return Optional.empty();
     }
 
     @Transactional

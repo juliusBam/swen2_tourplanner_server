@@ -1,4 +1,4 @@
-package at.technikum.swen2_tourplanner_server.models;
+package at.technikum.swen2_tourplanner_server.dto;
 
 public class TourReport {
     private final String base64Report;
