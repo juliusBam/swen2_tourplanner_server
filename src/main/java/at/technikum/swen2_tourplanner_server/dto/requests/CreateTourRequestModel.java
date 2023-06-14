@@ -1,6 +1,5 @@
 package at.technikum.swen2_tourplanner_server.dto.requests;
 
-import at.technikum.swen2_tourplanner_server.entities.Location;
 import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
 
 public class CreateTourRequestModel {
@@ -11,20 +10,20 @@ public class CreateTourRequestModel {
 
     private String description;
 
-    private Location start;
+    private String start;
 
-    private Location end;
+    private String end;
 
     private Vehicle vehicle;
 
     private Long estimatedTimeSeconds;
 
-    private Long tourDistanceKilometers;
+    private Double tourDistanceKilometers;
     //endregion
 
     //region constructors
     public CreateTourRequestModel() {}
-    public CreateTourRequestModel(Long id, String name, String description, Vehicle vehicle, Location start, Location end, Long estimatedTimeSeconds, Long tourDistanceKilometers)  {
+    public CreateTourRequestModel(Long id, String name, String description, Vehicle vehicle, String start, String end, Long estimatedTimeSeconds, Double tourDistanceKilometers)  {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -60,19 +59,19 @@ public class CreateTourRequestModel {
         this.description = description;
     }
 
-    public Location getStart() {
+    public String getStart() {
         return start;
     }
 
-    public void setStart(Location start) {
+    public void setStart(String start) {
         this.start = start;
     }
 
-    public Location getEnd() {
+    public String getEnd() {
         return end;
     }
 
-    public void setEnd(Location end) {
+    public void setEnd(String end) {
         this.end = end;
     }
 
@@ -92,11 +91,11 @@ public class CreateTourRequestModel {
         this.estimatedTimeSeconds = estimatedTimeSeconds;
     }
 
-    public Long getTourDistanceKilometers() {
+    public Double getTourDistanceKilometers() {
         return tourDistanceKilometers;
     }
 
-    public void setTourDistanceKilometers(Long tourDistanceKilometers) {
+    public void setTourDistanceKilometers(Double tourDistanceKilometers) {
         this.tourDistanceKilometers = tourDistanceKilometers;
     }
     //end region

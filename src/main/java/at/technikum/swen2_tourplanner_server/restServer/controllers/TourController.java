@@ -2,9 +2,9 @@ package at.technikum.swen2_tourplanner_server.restServer.controllers;
 
 import at.technikum.swen2_tourplanner_server.Logging;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
-import at.technikum.swen2_tourplanner_server.exceptions.RecordCreationErrorExc;
-import at.technikum.swen2_tourplanner_server.exceptions.RecordNotFoundExc;
-import at.technikum.swen2_tourplanner_server.exceptions.RecordUpdateErrorExc;
+import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
+import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
+import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordUpdateErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import at.technikum.swen2_tourplanner_server.restServer.services.TourService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,6 +28,7 @@ public class TourController extends Logging {
     //Registers the entry points of the REST SERVER
 
     //region Get Routes
+    //todo remove the fotos from the response
     @GetMapping("")
     List<Tour> all() {
         return tourService.getAll();
@@ -44,6 +45,10 @@ public class TourController extends Logging {
     String exportTour(@PathVariable Long id) {
         return tourService.exportTour(id);
     }
+
+    //todo add getFotoByTourId
+
+
     //endregion
 
     //region Post Routes

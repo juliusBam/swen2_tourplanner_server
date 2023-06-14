@@ -1,4 +1,4 @@
-package at.technikum.swen2_tourplanner_server.exceptions;
+package at.technikum.swen2_tourplanner_server.restServer.exceptions;
 
 public class RecordCreationErrorExc extends RuntimeException {
 

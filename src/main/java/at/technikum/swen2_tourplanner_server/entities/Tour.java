@@ -10,6 +10,8 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 
+//todo add the calculated values, see "popularity" and "child-friendlyness"
+
 @Entity(name = "tours")
 public class Tour implements Serializable {
 
@@ -29,11 +31,17 @@ public class Tour implements Serializable {
     @Size(min = 10, max = 50, message = "A valid description must contain more than 10 characters and less than 500")
     private String description;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Location start;
+    @Column(name = "from_location", nullable = false, length = 50)
+    @NotNull(message = "Start cannot be null")
+    @NotBlank(message = "Start cannot be empty")
+    @Size(min = 1, max = 50, message = "A valid name must contain more than 5 characters and less than 50")
+    private String from;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Location end;
+    @Column(name = "to_location", nullable = false, length = 50)
+    @NotNull(message = "To cannot be null")
+    @NotBlank(message = "To cannot be empty")
+    @Size(min = 1, max = 50, message = "A valid name must contain more than 5 characters and less than 50")
+    private String to;
 
     @Column(name = "vehicle", nullable = false)
     @NotNull(message = "Vehicle cannot be null")
@@ -45,10 +53,11 @@ public class Tour implements Serializable {
     @Min(value = 1, message = "Estimated time in minutes has to be at least 1")
     private Long estimatedTimeSeconds;
 
-    @Column(name = "distance_meters", nullable = false)
+    //todo change to Double
+    @Column(name = "distance_km", nullable = false)
     @NotNull(message = "Distance cannot be null")
-    @Min(value = 1, message = "Tour distance in meters has to be at least 1")
-    private Long tourDistanceKilometers;
+    @Min(value = 0, message = "Tour distance in meters has to be at least 1")
+    private Double tourDistanceKilometers;
 
     @Column(name = "tour_image", nullable = false, columnDefinition = "BYTEA")
     @NotNull(message = "The tour image has to be set")
@@ -63,12 +72,12 @@ public class Tour implements Serializable {
 
     }
 
-    public Tour(String name, String description, Vehicle vehicle, Location start, Location end, Long estimatedTimeSeconds, Long tourDistanceKilometers, byte[] tourImage, List<TourLog> logs)  {
+    public Tour(String name, String description, Vehicle vehicle, String from, String to, Long estimatedTimeSeconds, Double tourDistanceKilometers, byte[] tourImage, List<TourLog> logs)  {
         this.name = name;
         this.description = description;
         this.vehicle = vehicle;
-        this.start = start;
-        this.end = end;
+        this.from = from;
+        this.to = to;
         this.estimatedTimeSeconds = estimatedTimeSeconds;
         this.tourDistanceKilometers = tourDistanceKilometers;
         this.base64Image = tourImage;
@@ -81,12 +90,12 @@ public class Tour implements Serializable {
         return id;
     }
 
-    public Location getStart() {
-        return start;
+    public String getFrom() {
+        return from;
     }
 
-    public Location getEnd() {
-        return end;
+    public String getTo() {
+        return to;
     }
 
     public Vehicle getVehicle() {
@@ -101,7 +110,7 @@ public class Tour implements Serializable {
         return estimatedTimeSeconds;
     }
 
-    public Long getTourDistanceKilometers() {
+    public Double getTourDistanceKilometers() {
         return tourDistanceKilometers;
     }
 

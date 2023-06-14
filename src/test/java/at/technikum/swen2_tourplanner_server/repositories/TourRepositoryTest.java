@@ -1,10 +1,8 @@
 package at.technikum.swen2_tourplanner_server.repositories;
 
-import at.technikum.swen2_tourplanner_server.entities.Location;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +30,10 @@ public class TourRepositoryTest {
     void setUp() {
 
         this.tour1 = new Tour("first tour", "first tour description", Vehicle.BIKE,
-                            new Location("wien", "coordinates"),
-                            new Location("bozen", "coordinates"),
+                            "wien",
+                            "bozen",
                             12L,
-                            8L,
+                            8.89,
                             "".getBytes(),
                             null
                 );
@@ -43,10 +41,10 @@ public class TourRepositoryTest {
         this.tourRepository.save(tour1);
 
         this.tour2 = new Tour("second tour", "second tour description", Vehicle.CAR,
-                new Location("lezzeno", "coordinates"),
-                new Location("balbla", "coordinates"),
+                "lezzeno",
+                "balbla",
                 12L,
-                8L,
+                8.99,
                 "".getBytes(),
                 null
         );
@@ -74,6 +72,12 @@ public class TourRepositoryTest {
         this.tourRepository.deleteById(id);
 
         assertTrue(this.tourRepository.findById(id).isEmpty());
+
+    }
+
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    void update() {
 
     }
 

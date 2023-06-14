@@ -1,6 +1,5 @@
 package at.technikum.swen2_tourplanner_server.repositories;
 
-import at.technikum.swen2_tourplanner_server.entities.Location;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.entities.enums.Difficulty;
@@ -8,7 +7,6 @@ import at.technikum.swen2_tourplanner_server.entities.enums.Rating;
 import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepository;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,10 +43,10 @@ public class TourLogRepositoryTest {
 
         //create tour 1
         this.tour1 = new Tour("first tour", "first tour description", Vehicle.BIKE,
-                new Location("wien", "coordinates"),
-                new Location("bozen", "coordinates"),
+                "wien",
+                "bozen",
                 12L,
-                8L,
+                8.23,
                 "".getBytes(),
                 null
         );
@@ -66,12 +64,12 @@ public class TourLogRepositoryTest {
 
         this.tourLogRepository.save(tourLog2);
 
-        //create tour2 w/o
+        //create tour2 w/o tourlogs
         this.tour2 = new Tour("second tour", "second tour description", Vehicle.BIKE,
-                new Location("wien", "coordinates"),
-                new Location("bozen", "coordinates"),
+                "wien",
+                "bozen",
                 12L,
-                8L,
+                8.00,
                 "".getBytes(),
                 null
         );
@@ -112,6 +110,19 @@ public class TourLogRepositoryTest {
 
         assertNotNull(tourLog);
         assertNotNull(tourLog.isEmpty());
+
+    }
+
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    @Test
+    void update() {
+
+        TourLog newTourLog = new TourLog(11123L, "tourlog 1 modified comment", Difficulty.EASY, 123L, Rating.GOOD, tour1);
+        newTourLog.setId(1L);
+
+        this.tourLogRepository.save(newTourLog);
+
+        //Optional<TourLog> fetchedTourLog
 
     }
 

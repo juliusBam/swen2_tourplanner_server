@@ -2,8 +2,7 @@ package at.technikum.swen2_tourplanner_server.restServer.services;
 
 import at.technikum.swen2_tourplanner_server.dto.requests.CreateTourRequestModel;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
-import at.technikum.swen2_tourplanner_server.exceptions.RecordCreationErrorExc;
-import at.technikum.swen2_tourplanner_server.exceptions.RecordNotFoundExc;
+import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.helpers.validators.IValidator;
 import at.technikum.swen2_tourplanner_server.helpers.validators.TourValidator;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
@@ -67,7 +66,7 @@ public class TourService {
     }
 
     public String exportTour(Long id) {
-        Tour tour = this.tourRepository.getById(id);
+        Optional<Tour> tour = this.tourRepository.findById(id);
         //TODO parse tour into json file and send it back
         return tour.toString();
     }

@@ -1,8 +1,8 @@
 package at.technikum.swen2_tourplanner_server.helpers.validators;
 
 import at.technikum.swen2_tourplanner_server.dto.requests.CreateTourRequestModel;
-import at.technikum.swen2_tourplanner_server.exceptions.RecordCreationErrorExc;
-import at.technikum.swen2_tourplanner_server.exceptions.RecordUpdateErrorExc;
+import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
+import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordUpdateErrorExc;
 
 public class TourValidator implements IValidator<CreateTourRequestModel> {
 
@@ -13,13 +13,13 @@ public class TourValidator implements IValidator<CreateTourRequestModel> {
             throw new RecordCreationErrorExc("Tour model is null");
         }
 
-        if (tourRequestModel.getStart().getCoordinate().equals(tourRequestModel.getEnd().getCoordinate())
-            || tourRequestModel.getStart().getLabel().equals(tourRequestModel.getEnd().getLabel())) {
+        if (tourRequestModel.getStart().equals(tourRequestModel.getEnd())) {
             throw new RecordCreationErrorExc("Tour start and tour end have to be different");
         }
 
     }
 
+    //todo add a method to check if the "version" is valid
     @Override
     public void validateUpdate(CreateTourRequestModel tourRequestModel) throws RuntimeException {
 

@@ -1,8 +1,8 @@
 package at.technikum.swen2_tourplanner_server.restServer.controllers.advisors;
 
-import at.technikum.swen2_tourplanner_server.exceptions.RecordCreationErrorExc;
-import at.technikum.swen2_tourplanner_server.exceptions.RecordNotFoundExc;
-import at.technikum.swen2_tourplanner_server.exceptions.RecordUpdateErrorExc;
+import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
+import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
+import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordUpdateErrorExc;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
