@@ -19,7 +19,7 @@ public class TourLogController extends Logging {
 
 
     TourLogController(TourLogRepository tourLogRepository, TourRepository tourRepository) {
-        this.tourLogService = new TourLogService(tourLogRepository, new TourService(tourRepository, tourLogRepository));
+        this.tourLogService = new TourLogService(tourLogRepository, new TourService(tourRepository));
     }
 
     //Register the entry points of the REST SERVER

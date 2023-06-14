@@ -1,7 +1,7 @@
 package at.technikum.swen2_tourplanner_server.restServer.services;
 
 import at.technikum.swen2_tourplanner_server.entities.Tour;
-import at.technikum.swen2_tourplanner_server.helpers.ReportGenerator;
+import at.technikum.swen2_tourplanner_server.helpers.reports.ReportGenerator;
 import at.technikum.swen2_tourplanner_server.dto.responses.TourReport;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepository;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
@@ -13,8 +13,8 @@ public class ReportService {
 
     private final ReportGenerator reportGenerator;
 
-    public ReportService(TourRepository tourRepository, TourLogRepository tourLogRepository) {
-        this.tourService = new TourService(tourRepository, tourLogRepository);
+    public ReportService(TourRepository tourRepository) {
+        this.tourService = new TourService(tourRepository);
         this.reportGenerator = new ReportGenerator();
     }
 

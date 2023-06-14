@@ -1,4 +1,4 @@
-package at.technikum.swen2_tourplanner_server.helpers;
+package at.technikum.swen2_tourplanner_server.helpers.reports;
 
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 

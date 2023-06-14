@@ -2,14 +2,17 @@ package at.technikum.swen2_tourplanner_server.restServer.controllers;
 
 import at.technikum.swen2_tourplanner_server.Logging;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
-import at.technikum.swen2_tourplanner_server.exceptions.TourNotFoundExc;
-import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepository;
+import at.technikum.swen2_tourplanner_server.exceptions.RecordCreationErrorExc;
+import at.technikum.swen2_tourplanner_server.exceptions.RecordNotFoundExc;
+import at.technikum.swen2_tourplanner_server.exceptions.RecordUpdateErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import at.technikum.swen2_tourplanner_server.restServer.services.TourService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -18,11 +21,11 @@ public class TourController extends Logging {
 
     private final TourService tourService;
 
-    TourController(TourRepository tourRepository, TourLogRepository tourLogRepository) {
-        this.tourService = new TourService(tourRepository, tourLogRepository);
+    TourController(TourRepository tourRepository) {
+        this.tourService = new TourService(tourRepository);
     }
 
-    //Register the entry points of the REST SERVER
+    //Registers the entry points of the REST SERVER
 
     //region Get Routes
     @GetMapping("")
@@ -33,7 +36,7 @@ public class TourController extends Logging {
     @GetMapping("/{id}")
     Tour getTour(@PathVariable Long id) {
         return tourService.getById(id).orElseThrow(
-                () -> new TourNotFoundExc("tour not found")
+                () -> new RecordNotFoundExc("tour not found")
         );
     }
 
@@ -45,18 +48,29 @@ public class TourController extends Logging {
 
     //region Post Routes
     //https://stackoverflow.com/questions/52818107/how-to-send-the-multipart-file-and-json-data-to-spring-boot
-    //https://stackoverflow.com/questions/52818107/how-to-send-the-multipart-file-and-json-data-to-spring-boot
-    //Long createTour(@RequestBody @Valid Tour newTour) {
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     Long createTour(@RequestParam("formData") String tourRequestAsString,
                     @RequestParam("tourImage") MultipartFile tourImage) {
 
-        return this.tourService.createTour(tourRequestAsString, tourImage);
-    }
+        try {
+
+            return this.tourService.createTour(tourRequestAsString, tourImage);
+
+        } catch (JsonProcessingException e) {
+
+            this.logger.error("Error parsing tour creation request");
+            throw new RecordCreationErrorExc(e.getMessage());
+
+        } catch (IOException e) {
+
+            this.logger.error("Error processing the image in the tour creation request");
+            throw new RecordCreationErrorExc("Error parsing the tour image");
+
+        }
+}
 
     @PostMapping("/import")
     void importTour(@RequestBody Tour newTour) {
-        this.logger.info("Received import tour req with name: " + newTour.getName());
         tourService.importTour(newTour);
     }
     //endregion
@@ -66,15 +80,33 @@ public class TourController extends Logging {
     @PutMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     Long updateTour(@RequestParam(name = "formData") String tourRequestAsString,
                     @RequestParam(name = "tourImage") MultipartFile tourImage) {
-        return tourService.updateTour(tourRequestAsString, tourImage);
+
+        try {
+
+            return tourService.updateTour(tourRequestAsString, tourImage);
+
+        } catch (JsonProcessingException e) {
+
+            this.logger.error("Error parsing tour update request");
+            throw new RecordUpdateErrorExc(e.getMessage());
+
+        } catch (IOException e) {
+
+                this.logger.error("Error processing the image in the tour update request");
+                throw new RecordUpdateErrorExc("Error parsing the tour image");
+
+        }
+
     }
     //endregion
 
     //region Delete Routes
     @DeleteMapping("/{id}")
     void deleteTour(@PathVariable Long id) {
+
         this.logger.info("Received delete tour req for tour id: " + id);
         tourService.deleteTour(id);
+
     }
     //endregion
 

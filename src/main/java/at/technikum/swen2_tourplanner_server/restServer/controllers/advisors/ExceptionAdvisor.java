@@ -1,8 +1,8 @@
 package at.technikum.swen2_tourplanner_server.restServer.controllers.advisors;
 
-import at.technikum.swen2_tourplanner_server.exceptions.TourCreationErrorExc;
-import at.technikum.swen2_tourplanner_server.exceptions.TourNotFoundExc;
-import at.technikum.swen2_tourplanner_server.exceptions.TourUpdateErrorExc;
+import at.technikum.swen2_tourplanner_server.exceptions.RecordCreationErrorExc;
+import at.technikum.swen2_tourplanner_server.exceptions.RecordNotFoundExc;
+import at.technikum.swen2_tourplanner_server.exceptions.RecordUpdateErrorExc;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,21 +15,21 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ExceptionAdvisor {
     //region exception handling
     @ResponseBody
-    @ExceptionHandler(TourNotFoundExc.class)
+    @ExceptionHandler(RecordNotFoundExc.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    String tourNotFoundHandler(TourNotFoundExc ex) {
+    String tourNotFoundHandler(RecordNotFoundExc ex) {
         return ex.getMessage();
     }
 
     @ResponseBody
-    @ExceptionHandler(TourCreationErrorExc.class)
+    @ExceptionHandler(RecordCreationErrorExc.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    String cannotCreateTour(TourCreationErrorExc ex) {return ex.getMessage();}
+    String cannotCreateTour(RecordCreationErrorExc ex) {return ex.getMessage();}
 
     @ResponseBody
-    @ExceptionHandler(TourUpdateErrorExc.class)
+    @ExceptionHandler(RecordUpdateErrorExc.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    String cannotUpdateTour(TourCreationErrorExc ex) {
+    String cannotUpdateTour(RecordUpdateErrorExc ex) {
         return ex.getMessage();
     }
     //endregion

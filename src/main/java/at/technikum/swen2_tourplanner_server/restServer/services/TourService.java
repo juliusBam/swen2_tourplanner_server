@@ -2,10 +2,10 @@ package at.technikum.swen2_tourplanner_server.restServer.services;
 
 import at.technikum.swen2_tourplanner_server.dto.requests.CreateTourRequestModel;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
-import at.technikum.swen2_tourplanner_server.entities.TourLog;
-import at.technikum.swen2_tourplanner_server.exceptions.TourCreationErrorExc;
-import at.technikum.swen2_tourplanner_server.exceptions.TourUpdateErrorExc;
-import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepository;
+import at.technikum.swen2_tourplanner_server.exceptions.RecordCreationErrorExc;
+import at.technikum.swen2_tourplanner_server.exceptions.RecordNotFoundExc;
+import at.technikum.swen2_tourplanner_server.helpers.validators.IValidator;
+import at.technikum.swen2_tourplanner_server.helpers.validators.TourValidator;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,49 +21,24 @@ import java.util.Optional;
 public class TourService {
     private final TourRepository tourRepository;
 
-    private final TourLogService tourLogService;
+    private final IValidator<CreateTourRequestModel> tourValidator;
 
-    public TourService(TourRepository tourRepository, TourLogRepository tourLogRepository) {
+    public TourService(TourRepository tourRepository) {
         this.tourRepository = tourRepository;
-        this.tourLogService = new TourLogService(tourLogRepository, this);
+        this.tourValidator = new TourValidator();
     }
 
-    public Long updateTour(String tourRequestModelString, MultipartFile tourImage) {
+    public Long updateTour(String tourRequestModelString, MultipartFile tourImage) throws IOException, JsonProcessingException {
 
-        //todo group the validation together
+        CreateTourRequestModel createTourRequestModel = new ObjectMapper().readValue(tourRequestModelString, CreateTourRequestModel.class);
 
-        CreateTourRequestModel createTourRequestModel;
+        this.tourValidator.validateUpdate(createTourRequestModel);
 
-        try {
-            createTourRequestModel = new ObjectMapper().readValue(tourRequestModelString, CreateTourRequestModel.class);
-        } catch (JsonProcessingException e) {
-            throw new TourCreationErrorExc(e.getMessage());
-        }
+        Tour existingTour = this.tourRepository.findById(createTourRequestModel.getId()).orElseThrow(
+                () -> new RecordNotFoundExc("could not find tour with name: " + createTourRequestModel.getName())
+        );
 
-        if (createTourRequestModel == null) {
-            throw new TourCreationErrorExc("Tour model is null");
-        }
-
-        if (createTourRequestModel.getId() == null) {
-            throw new TourUpdateErrorExc("Tour id has to be set");
-        }
-
-        if (createTourRequestModel.getStart().getCoordinate().equals(createTourRequestModel.getEnd().getCoordinate())) {
-            throw new TourCreationErrorExc("Tour start and tour end have to be different");
-        }
-
-        byte[] tourImagesAsBytes;
-
-        try {
-            tourImagesAsBytes = tourImage.getBytes();
-        } catch (IOException e) {
-            throw new TourCreationErrorExc("Error parsing the tour image");
-        }
-
-        //todo add error msg
-        this.tourRepository.findById(createTourRequestModel.getId()).orElseThrow();
-
-        List<TourLog> relatedLogs = this.tourLogService.getAllByTourId(createTourRequestModel.getId());
+        byte[] tourImagesAsBytes = tourImage.getBytes();
 
         Tour updatedTour = new Tour(
                 createTourRequestModel.getName(),
@@ -74,7 +49,7 @@ public class TourService {
                 createTourRequestModel.getEstimatedTimeSeconds(),
                 createTourRequestModel.getTourDistanceKilometers(),
                 tourImagesAsBytes,
-                relatedLogs
+                existingTour.getLogs()
         );
 
         updatedTour.setId(createTourRequestModel.getId());
@@ -93,7 +68,7 @@ public class TourService {
 
     public String exportTour(Long id) {
         Tour tour = this.tourRepository.getById(id);
-        //TODO parse tour into json
+        //TODO parse tour into json file and send it back
         return tour.toString();
     }
 
@@ -106,31 +81,13 @@ public class TourService {
     }
 
     @Transactional
-    public Long createTour(String tourRequestModelString, MultipartFile tourImage) {
+    public Long createTour(String tourRequestModelString, MultipartFile tourImage) throws JsonProcessingException, IOException {
 
-        CreateTourRequestModel createTourRequestModel;
+        CreateTourRequestModel createTourRequestModel = new ObjectMapper().readValue(tourRequestModelString, CreateTourRequestModel.class);
 
-        try {
-            createTourRequestModel = new ObjectMapper().readValue(tourRequestModelString, CreateTourRequestModel.class);
-        } catch (JsonProcessingException e) {
-            throw new TourCreationErrorExc(e.getMessage());
-        }
+        this.tourValidator.validateCreation(createTourRequestModel);
 
-        if (createTourRequestModel == null) {
-            throw new TourCreationErrorExc("Tour model is null");
-        }
-
-        if (createTourRequestModel.getStart().getCoordinate().equals(createTourRequestModel.getEnd().getCoordinate())) {
-            throw new TourCreationErrorExc("Tour start and tour end have to be different");
-        }
-
-        byte[] tourImagesAsBytes;
-
-        try {
-            tourImagesAsBytes = tourImage.getBytes();
-        } catch (IOException e) {
-            throw new TourCreationErrorExc("Error parsing the tour image");
-        }
+        byte[] tourImagesAsBytes = tourImage.getBytes();
 
         Tour newTour = new Tour(
                 createTourRequestModel.getName(),
