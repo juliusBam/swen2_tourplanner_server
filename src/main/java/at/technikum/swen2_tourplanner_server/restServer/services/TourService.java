@@ -2,6 +2,7 @@ package at.technikum.swen2_tourplanner_server.restServer.services;
 
 import at.technikum.swen2_tourplanner_server.dto.requests.CreateTourRequestModel;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
+import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.helpers.validators.IValidator;
 import at.technikum.swen2_tourplanner_server.helpers.validators.TourValidator;
@@ -101,5 +102,38 @@ public class TourService {
         );
 
         return this.tourRepository.save(newTour).getId();
+    }
+
+    public void updateCalculatedValues(Long tourToUpdateId, List<TourLog> linkedLogs) {
+
+        Tour tourToUpdate = this.tourRepository.findById(tourToUpdateId).orElseThrow(
+                () -> new RecordNotFoundExc("Could not find tour with id: " + tourToUpdateId)
+        );
+
+        int numberOfReviews = linkedLogs.size();
+
+        Double childF = 0.0;
+
+        for (TourLog tourlog: linkedLogs) {
+            Double sum = (double)(tourlog.getDifficulty().ordinal() + tourlog.getRating().ordinal());
+
+            if (tourlog.getTotalTimeMinutes() > 90) {
+                sum = sum/2;
+            }
+
+            childF += sum;
+        }
+
+        if (tourToUpdate.getTourDistanceKilometers() > 150) {
+            childF *= 0.7;
+        }
+
+        childF /= numberOfReviews;
+
+        tourToUpdate.setPopularity(numberOfReviews);
+        tourToUpdate.setChildFriendliness(childF.intValue());
+
+        this.tourRepository.save(tourToUpdate);
+
     }
 }

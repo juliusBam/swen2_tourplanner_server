@@ -3,7 +3,10 @@ package at.technikum.swen2_tourplanner_server.restServer.services;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.dto.requests.CreateTourLogReqModel;
+import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
+import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +27,7 @@ public class TourLogService {
         return this.tourLogRepository.findTourLogsByTourId(id);
     }
 
+    @Transactional
     public Long createTourLog(CreateTourLogReqModel newTourLogReq) {
 
         Long linkedTourId = newTourLogReq.getTourId();
@@ -34,16 +38,36 @@ public class TourLogService {
                                             newTourLogReq.getDifficulty(), newTourLogReq.getTotalTimeMinutes(),
                                             newTourLogReq.getRating(), linkedTour);
 
-        return this.tourLogRepository.save(newTourLog).getId();
+        linkedTour.addLog(newTourLog);
+
+        Long newTourLogId = this.tourLogRepository.saveAndFlush(newTourLog).getId();
+
+        //update tour calculated values, we have to refetch the tour to get the new logs
+        this.tourService.updateCalculatedValues(linkedTour.getId(), this.getAllByTourId(linkedTour.getId()));
+
+        return newTourLogId;
     }
 
-    public Long updateTourLog(TourLog updatedTourLog) {
+    @Transactional
+    public Long updateTourLog(CreateTourLogReqModel updatedTourLog) {
 
         //if tour log is not present anymore do not allow an update
-        this.tourLogRepository.findById(updatedTourLog.getId()).orElseThrow();
+        this.tourLogRepository.findById(updatedTourLog.getId()).orElseThrow(
+                () -> new RecordNotFoundExc("Associated tour not found")
+        );
 
-        return this.tourLogRepository.save(updatedTourLog).getId();
+        Tour parentTour = this.tourService.getById(updatedTourLog.getTourId()).orElseThrow();
 
+        TourLog newTourLog = new TourLog(updatedTourLog.getTimeStamp(), updatedTourLog.getComment(),
+                updatedTourLog.getDifficulty(), updatedTourLog.getTotalTimeMinutes(),
+                updatedTourLog.getRating(), parentTour);
+
+        this.tourLogRepository.saveAndFlush(newTourLog);
+
+        //update tour calculated values  we have to refetch the tour to get the new logs
+        this.tourService.updateCalculatedValues(parentTour.getId(), this.getAllByTourId(parentTour.getId()));
+
+        return updatedTourLog.getId();
     }
 
     public void deleteTourLog(Long tourId) {

@@ -59,12 +59,17 @@ public class Tour implements Serializable {
     @Min(value = 0, message = "Tour distance in meters has to be at least 1")
     private Double tourDistanceKilometers;
 
-    @Column(name = "tour_image", nullable = false, columnDefinition = "BYTEA")
-    @NotNull(message = "The tour image has to be set")
-    private byte[] base64Image;
+    @Column(name = "route_information", nullable = false, columnDefinition = "BYTEA")
+    private byte[] routeInformation;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "tour")
     private List<TourLog> logs;
+
+    @Column(name = "popularity")
+    private int popularity;
+
+    @Column(name = "child_friendliness")
+    private int childFriendliness;
     //endregion
 
     //region constructors
@@ -80,7 +85,7 @@ public class Tour implements Serializable {
         this.to = to;
         this.estimatedTimeSeconds = estimatedTimeSeconds;
         this.tourDistanceKilometers = tourDistanceKilometers;
-        this.base64Image = tourImage;
+        this.routeInformation = tourImage;
         this.logs = logs;
     }
     //endregion
@@ -102,8 +107,8 @@ public class Tour implements Serializable {
         return vehicle;
     }
 
-    public byte[] getBase64Image() {
-        return base64Image;
+    public byte[] getRouteInformation() {
+        return routeInformation;
     }
 
     public Long getEstimatedTimeSeconds() {
@@ -125,11 +130,34 @@ public class Tour implements Serializable {
     public List<TourLog> getLogs() {
         return this.logs;
     }
+
+    public int getPopularity() {
+        return popularity;
+    }
+    public int getChildFriendliness() {
+        return childFriendliness;
+    }
     //endregion
 
     //region setters
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setPopularity(int popularity) {
+        this.popularity = popularity;
+    }
+
+    public void setChildFriendliness(int childFriendliness) {
+        this.childFriendliness = childFriendliness;
+    }
+
+    public void setLogs(List<TourLog> newLogs) {
+        this.logs = newLogs;
+    }
+
+    public void addLog(TourLog newLog) {
+        this.logs.add(newLog);
     }
     //endregion
 

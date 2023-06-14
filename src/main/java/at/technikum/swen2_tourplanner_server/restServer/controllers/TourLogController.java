@@ -42,7 +42,7 @@ public class TourLogController extends Logging {
     //region Put Routes
 
     @PutMapping("")
-    Long updateTourLog(@RequestBody TourLog updatedTourLog) {
+    Long updateTourLog(@RequestBody CreateTourLogReqModel updatedTourLog) {
         //this.logger.info();
         return tourLogService.updateTourLog(updatedTourLog);
     }
