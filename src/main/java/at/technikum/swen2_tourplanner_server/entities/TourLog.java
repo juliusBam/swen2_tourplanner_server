@@ -12,6 +12,7 @@ import java.io.Serializable;
 
 @Entity(name = "tour_log")
 public class TourLog implements Serializable {
+
     @Id
     @GeneratedValue
     @Column(name = "tour_log_id")
@@ -78,6 +79,9 @@ public class TourLog implements Serializable {
     //endregion
 
     //region setters
+    public void setId(Long id) {
+        this.id = id;
+    }
     public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
     }

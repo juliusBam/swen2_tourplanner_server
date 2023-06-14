@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+//todo delete deprecated
+
 @RestController
 @RequestMapping(value = "/images")
 public class ImageController {

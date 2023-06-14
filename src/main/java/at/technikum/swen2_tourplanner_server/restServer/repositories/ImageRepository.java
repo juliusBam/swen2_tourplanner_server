@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
+//todo delete deprecated
+
 public interface ImageRepository extends JpaRepository<DbImage, Long> {
 
     DbImage getDbImageByName(String name);

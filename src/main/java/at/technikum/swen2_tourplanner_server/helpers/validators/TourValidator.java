@@ -28,6 +28,7 @@ public class TourValidator implements IValidator<CreateTourRequestModel> {
         } catch (RecordCreationErrorExc e) {
             throw new RecordUpdateErrorExc(e.getMessage());
         }
+
         if (tourRequestModel.getId() == null) {
             throw new RecordUpdateErrorExc("Tour id has to be set");
         }

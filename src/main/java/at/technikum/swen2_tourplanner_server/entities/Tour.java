@@ -119,10 +119,6 @@ public class Tour implements Serializable {
     //endregion
 
     //region setters
-    public void setStart(Location start) {
-        this.start = start;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }

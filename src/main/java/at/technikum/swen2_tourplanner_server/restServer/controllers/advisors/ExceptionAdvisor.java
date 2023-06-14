@@ -16,19 +16,19 @@ public class ExceptionAdvisor {
     //region exception handling
     @ResponseBody
     @ExceptionHandler(RecordNotFoundExc.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     String tourNotFoundHandler(RecordNotFoundExc ex) {
         return ex.getMessage();
     }
 
     @ResponseBody
     @ExceptionHandler(RecordCreationErrorExc.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     String cannotCreateTour(RecordCreationErrorExc ex) {return ex.getMessage();}
 
     @ResponseBody
     @ExceptionHandler(RecordUpdateErrorExc.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     String cannotUpdateTour(RecordUpdateErrorExc ex) {
         return ex.getMessage();
     }

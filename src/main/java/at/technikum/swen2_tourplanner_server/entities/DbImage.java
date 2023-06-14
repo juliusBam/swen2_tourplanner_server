@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 
+//todo delete deprecated
 
 @Entity(name = "images")
 public class DbImage implements Serializable {
