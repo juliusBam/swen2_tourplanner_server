@@ -21,7 +21,8 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.ANY)
+@AutoConfigureTestDatabase
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class TourLogRepositoryTest {
 
     @Autowired
@@ -117,12 +118,17 @@ public class TourLogRepositoryTest {
     @Test
     void update() {
 
-        TourLog newTourLog = new TourLog(11123L, "tourlog 1 modified comment", Difficulty.EASY, 123L, Rating.GOOD, tour1);
-        newTourLog.setId(1L);
+        String newTourComment = "tourlog 1 modified comment";
+
+        TourLog newTourLog = new TourLog(11123L, newTourComment, Difficulty.EASY, 123L, Rating.GOOD, tour1);
+        newTourLog.setId(this.tour2.getId());
 
         this.tourLogRepository.save(newTourLog);
 
-        //Optional<TourLog> fetchedTourLog
+        Optional<TourLog> storedTourLog = this.tourLogRepository.findById(this.tour2.getId());
+
+        assertTrue(storedTourLog.isPresent());
+        assertEquals(newTourComment, storedTourLog.get().getComment());
 
     }
 

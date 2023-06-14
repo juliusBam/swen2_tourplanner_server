@@ -58,7 +58,17 @@ public class TourService {
     }
 
     public void deleteTour(Long id) {
-        this.tourRepository.deleteById(id);
+
+        if (this.tourRepository.findById(id).isPresent()) {
+
+            this.tourRepository.deleteById(id);
+
+        } else {
+
+            throw new RecordNotFoundExc("Could not find tour with id: " + id);
+
+        }
+
     }
 
     public void importTour(Tour newTour) {
@@ -131,7 +141,7 @@ public class TourService {
         childF /= numberOfReviews;
 
         tourToUpdate.setPopularity(numberOfReviews);
-        tourToUpdate.setChildFriendliness(childF.intValue());
+        tourToUpdate.setChildFriendliness(childF);
 
         this.tourRepository.save(tourToUpdate);
 

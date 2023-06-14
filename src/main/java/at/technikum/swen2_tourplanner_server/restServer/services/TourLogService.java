@@ -62,6 +62,8 @@ public class TourLogService {
                 updatedTourLog.getDifficulty(), updatedTourLog.getTotalTimeMinutes(),
                 updatedTourLog.getRating(), parentTour);
 
+        newTourLog.setId(updatedTourLog.getId());
+
         this.tourLogRepository.saveAndFlush(newTourLog);
 
         //update tour calculated values  we have to refetch the tour to get the new logs

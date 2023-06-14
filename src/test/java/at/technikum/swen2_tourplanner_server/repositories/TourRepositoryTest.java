@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.ANY)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class TourRepositoryTest {
 
     @Autowired
@@ -78,6 +79,27 @@ public class TourRepositoryTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void update() {
+
+        String newTourName = "New cool tour name";
+
+        Tour newTour = new Tour(newTourName, "first tour description", Vehicle.BIKE,
+                "wien",
+                "bozen",
+                12L,
+                8.89,
+                "".getBytes(),
+                null
+        );
+
+        newTour.setId(this.tour1.getId());
+
+        this.tourRepository.save(newTour);
+
+        Optional<Tour> storedTour = this.tourRepository.findById(this.tour1.getId());
+
+        assertNotNull(storedTour);
+        assertTrue(storedTour.isPresent());
+        assertEquals(newTourName, storedTour.get().getName());
 
     }
 

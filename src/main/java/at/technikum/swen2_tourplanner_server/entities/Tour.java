@@ -69,7 +69,7 @@ public class Tour implements Serializable {
     private int popularity;
 
     @Column(name = "child_friendliness")
-    private int childFriendliness;
+    private Double childFriendliness;
     //endregion
 
     //region constructors
@@ -134,7 +134,7 @@ public class Tour implements Serializable {
     public int getPopularity() {
         return popularity;
     }
-    public int getChildFriendliness() {
+    public Double getChildFriendliness() {
         return childFriendliness;
     }
     //endregion
@@ -148,7 +148,7 @@ public class Tour implements Serializable {
         this.popularity = popularity;
     }
 
-    public void setChildFriendliness(int childFriendliness) {
+    public void setChildFriendliness(Double childFriendliness) {
         this.childFriendliness = childFriendliness;
     }
 
