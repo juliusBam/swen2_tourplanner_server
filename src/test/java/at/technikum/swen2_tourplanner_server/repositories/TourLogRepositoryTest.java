@@ -39,6 +39,7 @@ public class TourLogRepositoryTest {
 
     private TourLog tourLog2;
 
+    //todo add a delete ad setUp
     @BeforeEach
     void setUp() {
 

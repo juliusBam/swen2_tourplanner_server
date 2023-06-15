@@ -27,6 +27,8 @@ public class TourRepositoryTest {
     private Tour tour1;
 
     private Tour tour2;
+
+    //todo add a delete ad setUp
     @BeforeEach
     void setUp() {
 

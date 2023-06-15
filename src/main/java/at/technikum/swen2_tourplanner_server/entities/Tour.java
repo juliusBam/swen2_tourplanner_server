@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 
-//todo add the calculated values, see "popularity" and "child-friendlyness"
+//todo convert the image to just the get request
 
 @Entity(name = "tours")
 public class Tour implements Serializable {
