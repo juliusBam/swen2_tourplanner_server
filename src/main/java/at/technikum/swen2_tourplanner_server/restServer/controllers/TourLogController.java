@@ -17,7 +17,6 @@ public class TourLogController extends Logging {
 
     private final TourLogService tourLogService;
 
-
     TourLogController(TourLogRepository tourLogRepository, TourRepository tourRepository) {
         this.tourLogService = new TourLogService(tourLogRepository, new TourService(tourRepository));
     }

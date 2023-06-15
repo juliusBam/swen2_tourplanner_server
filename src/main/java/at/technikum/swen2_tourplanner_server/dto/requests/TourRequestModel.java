@@ -2,7 +2,7 @@ package at.technikum.swen2_tourplanner_server.dto.requests;
 
 import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
 
-public class CreateTourRequestModel {
+public class TourRequestModel {
 
     //region fields
     private Long id;
@@ -19,11 +19,13 @@ public class CreateTourRequestModel {
     private Long estimatedTimeSeconds;
 
     private Double tourDistanceKilometers;
+
+    private String routeInformation;
     //endregion
 
     //region constructors
-    public CreateTourRequestModel() {}
-    public CreateTourRequestModel(Long id, String name, String description, Vehicle vehicle, String start, String end, Long estimatedTimeSeconds, Double tourDistanceKilometers)  {
+    public TourRequestModel() {}
+    public TourRequestModel(Long id, String name, String description, Vehicle vehicle, String start, String end, Long estimatedTimeSeconds, Double tourDistanceKilometers, String routeInformation)  {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -32,6 +34,7 @@ public class CreateTourRequestModel {
         this.end = end;
         this.estimatedTimeSeconds = estimatedTimeSeconds;
         this.tourDistanceKilometers = tourDistanceKilometers;
+        this.routeInformation = routeInformation;
     }
     //endregion
 
@@ -97,6 +100,14 @@ public class CreateTourRequestModel {
 
     public void setTourDistanceKilometers(Double tourDistanceKilometers) {
         this.tourDistanceKilometers = tourDistanceKilometers;
+    }
+
+    public void setRouteInformation(String newRouteInformation) {
+        this.routeInformation = newRouteInformation;
+    }
+
+    public String getRouteInformation() {
+        return this.routeInformation;
     }
     //end region
 }

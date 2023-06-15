@@ -3,6 +3,8 @@ package at.technikum.swen2_tourplanner_server.repositories;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
@@ -17,8 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.ANY)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@AutoConfigureTestDatabase
 public class TourRepositoryTest {
 
     @Autowired
@@ -28,45 +30,44 @@ public class TourRepositoryTest {
 
     private Tour tour2;
 
-    //todo add a delete ad setUp
     @BeforeEach
     void setUp() {
+
+        //clean db before each test
+        this.tourRepository.deleteAll();
 
         this.tour1 = new Tour("first tour", "first tour description", Vehicle.BIKE,
                             "wien",
                             "bozen",
                             12L,
                             8.89,
-                            "".getBytes(),
+                            "dasd",
                             null
                 );
-        this.tour1.setId(1L);
-        this.tourRepository.save(tour1);
+        this.tourRepository.save(tour1).getId();
 
         this.tour2 = new Tour("second tour", "second tour description", Vehicle.CAR,
                 "lezzeno",
                 "balbla",
                 12L,
                 8.99,
-                "".getBytes(),
+                "dasdsa",
                 null
         );
-        this.tour2.setId(2L);
-        this.tourRepository.save(tour2);
+        this.tourRepository.save(tour2).getId();
 
 
     }
 
     @Test
     void getById() {
-        Optional<Tour> searchedTour = this.tourRepository.findById(2L);
+        Optional<Tour> searchedTour = this.tourRepository.findById(this.tour1.getId());
 
         assertNotNull(searchedTour);
         assertTrue(searchedTour.isPresent());
-        assertEquals(this.tour2.getName(), searchedTour.get().getName());
+        assertEquals(this.tour1.getName(), searchedTour.get().getName());
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void delete() {
 
@@ -78,9 +79,10 @@ public class TourRepositoryTest {
 
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void update() {
+
+        List<Tour> recs = this.tourRepository.findAll();
 
         String newTourName = "New cool tour name";
 
@@ -89,7 +91,7 @@ public class TourRepositoryTest {
                 "bozen",
                 12L,
                 8.89,
-                "".getBytes(),
+                "dasdas",
                 null
         );
 

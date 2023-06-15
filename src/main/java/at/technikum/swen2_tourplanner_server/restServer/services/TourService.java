@@ -1,19 +1,16 @@
 package at.technikum.swen2_tourplanner_server.restServer.services;
 
-import at.technikum.swen2_tourplanner_server.dto.requests.CreateTourRequestModel;
+import at.technikum.swen2_tourplanner_server.dto.requests.TourRequestModel;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
+import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.helpers.validators.IValidator;
 import at.technikum.swen2_tourplanner_server.helpers.validators.TourValidator;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,40 +18,40 @@ import java.util.Optional;
 public class TourService {
     private final TourRepository tourRepository;
 
-    private final IValidator<CreateTourRequestModel> tourValidator;
+    private final IValidator<TourRequestModel> tourValidator;
 
     public TourService(TourRepository tourRepository) {
         this.tourRepository = tourRepository;
         this.tourValidator = new TourValidator();
     }
 
-    public Long updateTour(String tourRequestModelString, MultipartFile tourImage) throws IOException, JsonProcessingException {
+    @Transactional
+    public Tour updateTour(TourRequestModel tourRequestModel) {
 
-        CreateTourRequestModel createTourRequestModel = new ObjectMapper().readValue(tourRequestModelString, CreateTourRequestModel.class);
+        this.tourValidator.validateUpdate(tourRequestModel);
 
-        this.tourValidator.validateUpdate(createTourRequestModel);
-
-        Tour existingTour = this.tourRepository.findById(createTourRequestModel.getId()).orElseThrow(
-                () -> new RecordNotFoundExc("could not find tour with name: " + createTourRequestModel.getName())
+        Tour existingTour = this.tourRepository.findById(tourRequestModel.getId()).orElseThrow(
+                () -> new RecordNotFoundExc("could not find tour with name: " + tourRequestModel.getName())
         );
 
-        byte[] tourImagesAsBytes = tourImage.getBytes();
-
         Tour updatedTour = new Tour(
-                createTourRequestModel.getName(),
-                createTourRequestModel.getDescription(),
-                createTourRequestModel.getVehicle(),
-                createTourRequestModel.getStart(),
-                createTourRequestModel.getEnd(),
-                createTourRequestModel.getEstimatedTimeSeconds(),
-                createTourRequestModel.getTourDistanceKilometers(),
-                tourImagesAsBytes,
+                tourRequestModel.getName(),
+                tourRequestModel.getDescription(),
+                tourRequestModel.getVehicle(),
+                tourRequestModel.getStart(),
+                tourRequestModel.getEnd(),
+                tourRequestModel.getEstimatedTimeSeconds(),
+                tourRequestModel.getTourDistanceKilometers(),
+                tourRequestModel.getRouteInformation(),
                 existingTour.getLogs()
         );
 
-        updatedTour.setId(createTourRequestModel.getId());
+        updatedTour.setId(tourRequestModel.getId());
 
-        return this.tourRepository.save(updatedTour).getId();
+        Long insertedId = this.tourRepository.saveAndFlush(updatedTour).getId();
+
+        return this.updateCalculatedValues(insertedId, updatedTour.getLogs());
+
     }
 
     public void deleteTour(Long id) {
@@ -91,30 +88,36 @@ public class TourService {
     }
 
     @Transactional
-    public Long createTour(String tourRequestModelString, MultipartFile tourImage) throws JsonProcessingException, IOException {
+    public Tour createTour(TourRequestModel tourRequestModel) {
 
-        CreateTourRequestModel createTourRequestModel = new ObjectMapper().readValue(tourRequestModelString, CreateTourRequestModel.class);
+        if (tourRequestModel.getId() != null) {
+            throw new RecordCreationErrorExc("Tour id cannot be set on creation");
+        }
 
-        this.tourValidator.validateCreation(createTourRequestModel);
-
-        byte[] tourImagesAsBytes = tourImage.getBytes();
+        this.tourValidator.validateCreation(tourRequestModel);
 
         Tour newTour = new Tour(
-                createTourRequestModel.getName(),
-                createTourRequestModel.getDescription(),
-                createTourRequestModel.getVehicle(),
-                createTourRequestModel.getStart(),
-                createTourRequestModel.getEnd(),
-                createTourRequestModel.getEstimatedTimeSeconds(),
-                createTourRequestModel.getTourDistanceKilometers(),
-                tourImagesAsBytes,
+                tourRequestModel.getName(),
+                tourRequestModel.getDescription(),
+                tourRequestModel.getVehicle(),
+                tourRequestModel.getStart(),
+                tourRequestModel.getEnd(),
+                tourRequestModel.getEstimatedTimeSeconds(),
+                tourRequestModel.getTourDistanceKilometers(),
+                tourRequestModel.getRouteInformation(),
                 null
         );
 
-        return this.tourRepository.save(newTour).getId();
+        Long addedId = this.tourRepository.saveAndFlush(newTour).getId();
+
+        //todo return the tour model
+        Tour addedTour = this.tourRepository.findById(addedId).orElseThrow(
+                () -> new RecordCreationErrorExc("The tour could not be created")
+        );
+        return addedTour;
     }
 
-    public void updateCalculatedValues(Long tourToUpdateId, List<TourLog> linkedLogs) {
+    public Tour updateCalculatedValues(Long tourToUpdateId, List<TourLog> linkedLogs) {
 
         Tour tourToUpdate = this.tourRepository.findById(tourToUpdateId).orElseThrow(
                 () -> new RecordNotFoundExc("Could not find tour with id: " + tourToUpdateId)
@@ -145,5 +148,6 @@ public class TourService {
 
         this.tourRepository.save(tourToUpdate);
 
+        return tourToUpdate;
     }
 }

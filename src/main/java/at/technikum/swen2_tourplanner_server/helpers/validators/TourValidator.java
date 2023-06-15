@@ -1,13 +1,13 @@
 package at.technikum.swen2_tourplanner_server.helpers.validators;
 
-import at.technikum.swen2_tourplanner_server.dto.requests.CreateTourRequestModel;
+import at.technikum.swen2_tourplanner_server.dto.requests.TourRequestModel;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordUpdateErrorExc;
 
-public class TourValidator implements IValidator<CreateTourRequestModel> {
+public class TourValidator implements IValidator<TourRequestModel> {
 
     @Override
-    public void validateCreation(CreateTourRequestModel tourRequestModel) throws RuntimeException {
+    public void validateCreation(TourRequestModel tourRequestModel) throws RuntimeException {
 
         if (tourRequestModel == null) {
             throw new RecordCreationErrorExc("Tour model is null");
@@ -21,7 +21,7 @@ public class TourValidator implements IValidator<CreateTourRequestModel> {
 
     //todo add a method to check if the "version" is valid
     @Override
-    public void validateUpdate(CreateTourRequestModel tourRequestModel) throws RuntimeException {
+    public void validateUpdate(TourRequestModel tourRequestModel) throws RuntimeException {
 
         try {
             this.validateCreation(tourRequestModel);

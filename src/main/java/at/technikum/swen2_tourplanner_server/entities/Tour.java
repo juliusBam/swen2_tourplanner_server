@@ -59,8 +59,11 @@ public class Tour implements Serializable {
     @Min(value = 0, message = "Tour distance in meters has to be at least 1")
     private Double tourDistanceKilometers;
 
-    @Column(name = "route_information", nullable = false, columnDefinition = "BYTEA")
-    private byte[] routeInformation;
+    @Column(name = "route_information", nullable = false, length = 255)
+    @NotNull(message = "The route information cannot be null")
+    @NotBlank(message = "The route information cannot be empty")
+    @Size(min = 1, max = 255, message = "A valid route information must contain more than 1 character and less than 255")
+    private String routeInformation;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "tour")
     private List<TourLog> logs;
@@ -77,7 +80,7 @@ public class Tour implements Serializable {
 
     }
 
-    public Tour(String name, String description, Vehicle vehicle, String from, String to, Long estimatedTimeSeconds, Double tourDistanceKilometers, byte[] tourImage, List<TourLog> logs)  {
+    public Tour(String name, String description, Vehicle vehicle, String from, String to, Long estimatedTimeSeconds, Double tourDistanceKilometers, String routeInformation, List<TourLog> logs)  {
         this.name = name;
         this.description = description;
         this.vehicle = vehicle;
@@ -85,7 +88,7 @@ public class Tour implements Serializable {
         this.to = to;
         this.estimatedTimeSeconds = estimatedTimeSeconds;
         this.tourDistanceKilometers = tourDistanceKilometers;
-        this.routeInformation = tourImage;
+        this.routeInformation = routeInformation;
         this.logs = logs;
     }
     //endregion
@@ -107,7 +110,7 @@ public class Tour implements Serializable {
         return vehicle;
     }
 
-    public byte[] getRouteInformation() {
+    public String getRouteInformation() {
         return routeInformation;
     }
 
@@ -158,6 +161,14 @@ public class Tour implements Serializable {
 
     public void addLog(TourLog newLog) {
         this.logs.add(newLog);
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
     //endregion
 

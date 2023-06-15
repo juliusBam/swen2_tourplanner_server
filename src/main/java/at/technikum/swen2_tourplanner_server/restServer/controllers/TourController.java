@@ -1,6 +1,7 @@
 package at.technikum.swen2_tourplanner_server.restServer.controllers;
 
 import at.technikum.swen2_tourplanner_server.Logging;
+import at.technikum.swen2_tourplanner_server.dto.requests.TourRequestModel;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
@@ -8,9 +9,7 @@ import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordUpdateE
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import at.technikum.swen2_tourplanner_server.restServer.services.TourService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -50,27 +49,12 @@ public class TourController extends Logging {
     //endregion
 
     //region Post Routes
-    //https://stackoverflow.com/questions/52818107/how-to-send-the-multipart-file-and-json-data-to-spring-boot
-    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    Long createTour(@RequestParam("formData") String tourRequestAsString,
-                    @RequestParam("tourImage") MultipartFile tourImage) {
+    @PostMapping(value = "")
+    Tour createTour(@RequestBody TourRequestModel tourRequestModel) {
 
-        try {
+            return this.tourService.createTour(tourRequestModel);
 
-            return this.tourService.createTour(tourRequestAsString, tourImage);
-
-        } catch (JsonProcessingException e) {
-
-            this.logger.error("Error parsing tour creation request");
-            throw new RecordCreationErrorExc(e.getMessage());
-
-        } catch (IOException e) {
-
-            this.logger.error("Error processing the image in the tour creation request");
-            throw new RecordCreationErrorExc("Error parsing the tour image");
-
-        }
-}
+    }
 
     @PostMapping("/import")
     void importTour(@RequestBody Tour newTour) {
@@ -79,26 +63,10 @@ public class TourController extends Logging {
     //endregion
 
     //region Put Routes
+    @PutMapping(value = "")
+    Tour updateTour(@RequestBody TourRequestModel tourRequestModel) {
 
-    @PutMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    Long updateTour(@RequestParam(name = "formData") String tourRequestAsString,
-                    @RequestParam(name = "tourImage") MultipartFile tourImage) {
-
-        try {
-
-            return tourService.updateTour(tourRequestAsString, tourImage);
-
-        } catch (JsonProcessingException e) {
-
-            this.logger.error("Error parsing tour update request");
-            throw new RecordUpdateErrorExc(e.getMessage());
-
-        } catch (IOException e) {
-
-                this.logger.error("Error processing the image in the tour update request");
-                throw new RecordUpdateErrorExc("Error parsing the tour image");
-
-        }
+            return tourService.updateTour(tourRequestModel);
 
     }
     //endregion

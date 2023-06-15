@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,8 +20,7 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 @DataJpaTest
-@AutoConfigureTestDatabase
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 public class TourLogRepositoryTest {
 
     @Autowired
@@ -43,28 +41,29 @@ public class TourLogRepositoryTest {
     @BeforeEach
     void setUp() {
 
+        //clean db
+        this.tourLogRepository.deleteAll();
+        this.tourRepository.deleteAll();
+
         //create tour 1
         this.tour1 = new Tour("first tour", "first tour description", Vehicle.BIKE,
                 "wien",
                 "bozen",
                 12L,
                 8.23,
-                "".getBytes(),
+                "dasd",
                 null
         );
-        this.tour1.setId(1L);
-        this.tourRepository.save(tour1);
+        this.tourRepository.save(tour1).getId();
 
         //add tour log 1 and 2 to tour 1
         this.tourLog1 = new TourLog(11123L, "tourlog 1 comment", Difficulty.EASY, 123L, Rating.GOOD, tour1);
-        this.tourLog1.setId(1L);
 
-        this.tourLogRepository.save(tourLog1);
+        this.tourLogRepository.save(tourLog1).getId();
 
         this.tourLog2 = new TourLog(11123L, "tourlog 2 comment", Difficulty.HARD, 123L, Rating.DECENT, tour1);
-        this.tourLog2.setId(2L);
 
-        this.tourLogRepository.save(tourLog2);
+        this.tourLogRepository.save(tourLog2).getId();
 
         //create tour2 w/o tourlogs
         this.tour2 = new Tour("second tour", "second tour description", Vehicle.BIKE,
@@ -72,19 +71,18 @@ public class TourLogRepositoryTest {
                 "bozen",
                 12L,
                 8.00,
-                "".getBytes(),
+                "das",
                 null
         );
-        this.tour2.setId(2L);
 
-        this.tourRepository.save(tour2);
+        this.tourRepository.save(tour2).getId();
 
     }
 
     @Test
     void fetchAllByTour() {
 
-        List<TourLog> tourLogs = this.tourLogRepository.findTourLogsByTourId(1L);
+        List<TourLog> tourLogs = this.tourLogRepository.findTourLogsByTourId(tour1.getId());
 
         assertTrue(tourLogs.size() != 0);
         assertTrue(tourLogs.stream().anyMatch(tourLog -> Objects.equals(tourLog.getId(), this.tourLog1.getId())));
@@ -94,7 +92,7 @@ public class TourLogRepositoryTest {
     @Test
     void fetchById() {
 
-        Optional<TourLog> tourLog = this.tourLogRepository.findById(1L);
+        Optional<TourLog> tourLog = this.tourLogRepository.findById(tourLog1.getId());
 
         assertNotNull(tourLog);
         assertTrue(tourLog.isPresent());
@@ -102,20 +100,18 @@ public class TourLogRepositoryTest {
 
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void delete() {
 
-        this.tourLogRepository.deleteById(1L);
+        this.tourLogRepository.deleteById(this.tourLog1.getId());
 
-        Optional<TourLog> tourLog = this.tourLogRepository.findById(1L);
+        Optional<TourLog> tourLog = this.tourLogRepository.findById(this.tourLog1.getId());
 
         assertNotNull(tourLog);
         assertNotNull(tourLog.isEmpty());
 
     }
 
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     @Test
     void update() {
 
@@ -132,7 +128,5 @@ public class TourLogRepositoryTest {
         assertEquals(newTourComment, storedTourLog.get().getComment());
 
     }
-
-
 
 }
