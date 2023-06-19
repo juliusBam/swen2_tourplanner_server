@@ -54,6 +54,7 @@ public class TourService {
 
     }
 
+    @Transactional
     public void deleteTour(Long id) {
 
         if (this.tourRepository.findById(id).isPresent()) {
@@ -109,14 +110,14 @@ public class TourService {
         );
 
         Long addedId = this.tourRepository.saveAndFlush(newTour).getId();
-
-        //todo return the tour model
+        
         Tour addedTour = this.tourRepository.findById(addedId).orElseThrow(
                 () -> new RecordCreationErrorExc("The tour could not be created")
         );
         return addedTour;
     }
 
+    @Transactional
     public Tour updateCalculatedValues(Long tourToUpdateId, List<TourLog> linkedLogs) {
 
         Tour tourToUpdate = this.tourRepository.findById(tourToUpdateId).orElseThrow(

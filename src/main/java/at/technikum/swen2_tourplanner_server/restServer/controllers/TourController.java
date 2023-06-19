@@ -29,7 +29,6 @@ public class TourController extends Logging {
     //Registers the entry points of the REST SERVER
 
     //region Get Routes
-    //todo remove the fotos from the response
     @GetMapping("")
     List<Tour> all() {
         return tourService.getAll();

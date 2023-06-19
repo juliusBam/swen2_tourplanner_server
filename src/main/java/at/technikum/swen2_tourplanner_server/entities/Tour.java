@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 
-//todo convert the image to just the get request
+//todo add a version number to check the updates
 
 @Entity(name = "tours")
 public class Tour implements Serializable {

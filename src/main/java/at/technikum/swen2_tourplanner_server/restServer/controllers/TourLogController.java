@@ -31,6 +31,7 @@ public class TourLogController extends Logging {
     //endregion
 
     //region Post Routes
+    //todo return the updated tour with the updated tour logs
     @PostMapping("")
     Long createTourLog(@RequestBody CreateTourLogReqModel newTourLog) {
         this.logger.info("Received post req for new tour log for tour id: " + newTourLog.getTourId());
@@ -39,7 +40,7 @@ public class TourLogController extends Logging {
     //endregion
 
     //region Put Routes
-
+    //todo return the updated tour with the updated tour logs
     @PutMapping("")
     Long updateTourLog(@RequestBody CreateTourLogReqModel updatedTourLog) {
         //this.logger.info();

@@ -20,4 +20,9 @@ public class ReportController {
         return this.reportService.generateTourReport(id);
     }
 
+    @GetMapping(value = "/summarize/{id}")
+    TourReport getSummarizeReport(@PathVariable Long id) {
+        return this.reportService.generateSummarizeReport(id);
+    }
+
 }

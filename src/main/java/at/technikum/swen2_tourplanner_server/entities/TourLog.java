@@ -10,6 +10,8 @@ import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 
+//todo add a version number to check the updates
+
 @Entity(name = "tour_log")
 public class TourLog implements Serializable {
 

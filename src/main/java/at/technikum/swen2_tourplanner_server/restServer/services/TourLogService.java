@@ -72,6 +72,7 @@ public class TourLogService {
         return updatedTourLog.getId();
     }
 
+    @Transactional
     public void deleteTourLog(Long tourId) {
         this.tourLogRepository.deleteById(tourId);
     }
