@@ -1,7 +1,7 @@
 package at.technikum.swen2_tourplanner_server.restServer.services;
 
+import at.technikum.swen2_tourplanner_server.BL.ReportGenerator;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
-import at.technikum.swen2_tourplanner_server.helpers.reports.ReportGenerator;
 import at.technikum.swen2_tourplanner_server.dto.responses.TourReport;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,11 @@ public class ReportService {
         this.reportGenerator = new ReportGenerator();
     }
 
-    public TourReport generateTourReport(Long tourId) {
+    public byte[] generateTourReport(Long tourId) {
 
         Tour requestedTour = this.tourService.getById(tourId).orElseThrow();
 
-        return new TourReport(
-                this.reportGenerator.generateTourReport(requestedTour)
-        );
+        return this.reportGenerator.generateTourReport(requestedTour);
     }
 
     public TourReport generateSummarizeReport(Long tourId) {

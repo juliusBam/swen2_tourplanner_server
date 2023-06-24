@@ -1,4 +1,4 @@
-package at.technikum.swen2_tourplanner_server.helpers.validators;
+package at.technikum.swen2_tourplanner_server.BL.validators;
 
 import at.technikum.swen2_tourplanner_server.dto.requests.TourRequestModel;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;

@@ -1,4 +1,4 @@
-package at.technikum.swen2_tourplanner_server.helpers.validators;
+package at.technikum.swen2_tourplanner_server.BL.validators;
 
 public interface IValidator<T> {
 

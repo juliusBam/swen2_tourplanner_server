@@ -172,4 +172,63 @@ public class Tour implements Serializable {
     }
     //endregion
 
+    public Float getAvgTime() {
+
+        Float avgTime = 0f;
+
+        if (this.logs.size() != 0) {
+
+            for (TourLog log : this.logs) {
+
+                avgTime += log.getTotalTimeMinutes();
+
+            }
+
+            avgTime = avgTime/this.logs.size();
+        }
+
+        return avgTime;
+
+    }
+
+    public Float getAvgRating() {
+
+        Float avgRating = 0f;
+
+        if (this.logs.size() != 0) {
+
+            for (TourLog log : this.logs) {
+
+                avgRating += log.getRating().ordinal();
+
+            }
+
+            avgRating = avgRating/this.logs.size();
+
+        }
+
+        return avgRating;
+
+    }
+
+    public Float getAvgDifficulty() {
+
+        Float avgDifficulty = 0f;
+
+        if (this.logs.size() != 0) {
+
+            for (TourLog log : this.logs) {
+
+                avgDifficulty += log.getDifficulty().ordinal();
+
+            }
+
+            avgDifficulty = avgDifficulty/this.logs.size();
+
+        }
+
+        return avgDifficulty;
+
+    }
+
 }
