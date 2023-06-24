@@ -28,11 +28,16 @@ public class TourLogService {
     }
 
     @Transactional
-    public Long createTourLog(CreateTourLogReqModel newTourLogReq) {
+    public Tour createTourLog(CreateTourLogReqModel newTourLogReq) {
 
         Long linkedTourId = newTourLogReq.getTourId();
 
-        Tour linkedTour = this.tourService.getById(linkedTourId).orElseThrow();
+        Tour linkedTour = this.tourService.getById(linkedTourId).orElseThrow(
+                () -> {
+                    //todo add logger
+                    throw new RecordNotFoundExc("Could not find the associated tour with id: " + linkedTourId);
+                }
+        );
 
         TourLog newTourLog = new TourLog(newTourLogReq.getTimeStamp(), newTourLogReq.getComment(),
                                             newTourLogReq.getDifficulty(), newTourLogReq.getTotalTimeMinutes(),
@@ -45,11 +50,17 @@ public class TourLogService {
         //update tour calculated values, we have to refetch the tour to get the new logs
         this.tourService.updateCalculatedValues(linkedTour.getId(), this.getAllByTourId(linkedTour.getId()));
 
-        return newTourLogId;
+        return this.tourService.getById(linkedTourId).orElseThrow(
+                () -> {
+                    //todo add logger
+                    throw new RecordNotFoundExc("Could not find the associated tour with id: " + linkedTourId);
+                }
+        );
+
     }
 
     @Transactional
-    public Long updateTourLog(CreateTourLogReqModel updatedTourLog) {
+    public Tour updateTourLog(CreateTourLogReqModel updatedTourLog) {
 
         //if tour log is not present anymore do not allow an update
         this.tourLogRepository.findById(updatedTourLog.getId()).orElseThrow(
@@ -69,7 +80,7 @@ public class TourLogService {
         //update tour calculated values  we have to refetch the tour to get the new logs
         this.tourService.updateCalculatedValues(parentTour.getId(), this.getAllByTourId(parentTour.getId()));
 
-        return updatedTourLog.getId();
+        return this.tourService.getById(parentTour.getId()).orElseThrow();
     }
 
     @Transactional

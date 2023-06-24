@@ -1,6 +1,7 @@
 package at.technikum.swen2_tourplanner_server.restServer.controllers;
 
 import at.technikum.swen2_tourplanner_server.Logging;
+import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.dto.requests.CreateTourLogReqModel;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepository;
@@ -31,18 +32,16 @@ public class TourLogController extends Logging {
     //endregion
 
     //region Post Routes
-    //todo return the updated tour with the updated tour logs
     @PostMapping("")
-    Long createTourLog(@RequestBody CreateTourLogReqModel newTourLog) {
+    Tour createTourLog(@RequestBody CreateTourLogReqModel newTourLog) {
         this.logger.info("Received post req for new tour log for tour id: " + newTourLog.getTourId());
         return tourLogService.createTourLog(newTourLog);
     }
     //endregion
 
     //region Put Routes
-    //todo return the updated tour with the updated tour logs
     @PutMapping("")
-    Long updateTourLog(@RequestBody CreateTourLogReqModel updatedTourLog) {
+    Tour updateTourLog(@RequestBody CreateTourLogReqModel updatedTourLog) {
         //this.logger.info();
         return tourLogService.updateTourLog(updatedTourLog);
     }

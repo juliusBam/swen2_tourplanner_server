@@ -3,18 +3,13 @@ package at.technikum.swen2_tourplanner_server.restServer.controllers;
 import at.technikum.swen2_tourplanner_server.Logging;
 import at.technikum.swen2_tourplanner_server.dto.requests.TourRequestModel;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
-import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
-import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordUpdateErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import at.technikum.swen2_tourplanner_server.restServer.services.TourService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
-//todo change routes for put and post so that they accept just a string for the image, being the url
 
 @RestController
 @RequestMapping("/tour")
