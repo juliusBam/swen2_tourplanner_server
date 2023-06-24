@@ -28,7 +28,7 @@ public class Tour implements Serializable {
     private String name;
 
     @Column(name = "description", nullable = true, length = 500)
-    @Size(min = 10, max = 50, message = "A valid description must contain more than 10 characters and less than 500")
+    @Size(min = 10, max = 500, message = "A valid description must contain more than 10 characters and less than 500")
     private String description;
 
     @Column(name = "from_location", nullable = false, length = 50)
@@ -53,7 +53,6 @@ public class Tour implements Serializable {
     @Min(value = 1, message = "Estimated time in minutes has to be at least 1")
     private Long estimatedTimeSeconds;
 
-    //todo change to Double
     @Column(name = "distance_km", nullable = false)
     @NotNull(message = "Distance cannot be null")
     @Min(value = 0, message = "Tour distance in meters has to be at least 1")
@@ -69,7 +68,7 @@ public class Tour implements Serializable {
     private List<TourLog> logs;
 
     @Column(name = "popularity")
-    private int popularity;
+    private Integer popularity;
 
     @Column(name = "child_friendliness")
     private Double childFriendliness;
@@ -134,7 +133,7 @@ public class Tour implements Serializable {
         return this.logs;
     }
 
-    public int getPopularity() {
+    public Integer getPopularity() {
         return popularity;
     }
     public Double getChildFriendliness() {
@@ -147,7 +146,7 @@ public class Tour implements Serializable {
         this.id = id;
     }
 
-    public void setPopularity(int popularity) {
+    public void setPopularity(Integer popularity) {
         this.popularity = popularity;
     }
 

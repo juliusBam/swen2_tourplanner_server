@@ -1,5 +1,6 @@
 package at.technikum.swen2_tourplanner_server.restServer.controllers;
 
+import at.technikum.swen2_tourplanner_server.BL.ReportGeneratorOutput;
 import at.technikum.swen2_tourplanner_server.dto.responses.TourReport;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import at.technikum.swen2_tourplanner_server.restServer.services.ReportService;
@@ -23,14 +24,25 @@ public class ReportController {
 
         HttpHeaders header = new HttpHeaders();
         header.setContentType(MediaType.APPLICATION_PDF);
-        header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + "blabla.pdf");
 
-        return new HttpEntity<byte[]>(this.reportService.generateTourReport(id), header);
+        ReportGeneratorOutput createdReport = this.reportService.generateTourReport(id);
+
+        header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + createdReport.getReportName());
+
+        return new HttpEntity<byte[]>(createdReport.getReportContent(), header);
     }
 
-    @GetMapping(value = "/summarize/{id}")
-    TourReport getSummarizeReport(@PathVariable Long id) {
-        return this.reportService.generateSummarizeReport(id);
+    @GetMapping(value = "/summarize")
+    HttpEntity<byte[]> getSummarizeReport() {
+
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_PDF);
+
+        ReportGeneratorOutput createdReport = this.reportService.generateSummarizeReport();
+
+        header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=summarized_" + createdReport.getReportName());
+
+        return new HttpEntity<byte[]>(createdReport.getReportContent(), header);
     }
 
 }

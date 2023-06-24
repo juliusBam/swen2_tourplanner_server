@@ -11,6 +11,7 @@ import at.technikum.swen2_tourplanner_server.restServer.repositories.TourReposit
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,7 +107,7 @@ public class TourService {
                 tourRequestModel.getEstimatedTimeSeconds(),
                 tourRequestModel.getTourDistanceKilometers(),
                 tourRequestModel.getRouteInformation(),
-                null
+                Collections.emptyList()
         );
 
         Long addedId = this.tourRepository.saveAndFlush(newTour).getId();
