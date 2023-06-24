@@ -2,6 +2,8 @@ package at.technikum.swen2_tourplanner_server.BL;
 
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
+import at.technikum.swen2_tourplanner_server.entities.enums.Rating;
+import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.ReportGenerationException;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -19,8 +21,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-
-//todo mapper for enums to strings
 
 public class ReportGenerator {
 
@@ -69,14 +69,14 @@ public class ReportGenerator {
                             this.createCell("Difficulty:", true)
                     );
                     tourLogDetailsTable.addCell(
-                            this.createCell(log.getDifficulty().toString(), true)
+                            this.createCell(log.getDifficulty().toString().toLowerCase(), true)
                     );
 
                     tourLogDetailsTable.addCell(
                             this.createCell("Rating:", true)
                     );
                     tourLogDetailsTable.addCell(
-                            this.createCell(log.getRating().toString(), true)
+                            this.createCell(this.convertRating(log.getRating()), true)
                     );
 
                     tourLogDetailsTable.addCell(
@@ -101,8 +101,6 @@ public class ReportGenerator {
                     tour.getName().toLowerCase().replace(" ", "_"),
                     byteArrayOutputStream.toByteArray()
             );
-
-            //return byteArrayOutputStream.toByteArray();
 
         }
         catch (IOException e) {
@@ -220,9 +218,47 @@ public class ReportGenerator {
         tourInfoTable.addCell(this.createCell(tourTimeInMinutes.toString(), true));
 
         tourInfoTable.addCell(this.createCell("Vehicle:", true));
-        tourInfoTable.addCell(this.createCell(tour.getVehicle().toString(), true));
+        tourInfoTable.addCell(this.createCell(this.convertVehicle(tour.getVehicle()), true));
 
         return tourInfoTable;
+
+    }
+
+    private String convertVehicle(Vehicle vehicle) {
+
+        switch (vehicle) {
+            case BIKE -> {
+                return "bike";
+            }
+            case CAR -> {
+                return "car";
+            }
+            case WALK -> {
+                return "hiking tour";
+            }
+            default -> {
+                return "unknown vehicle";
+            }
+        }
+
+    }
+
+    private String convertRating(Rating rating) {
+
+        switch (rating) {
+            case BAD -> {
+                return "negative";
+            }
+            case DECENT -> {
+                return "neutral";
+            }
+            case GOOD -> {
+                return "good";
+            }
+            default -> {
+                return "unknown rating";
+            }
+        }
 
     }
 
