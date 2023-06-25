@@ -1,6 +1,6 @@
 package at.technikum.swen2_tourplanner_server.restServer.services;
 
-import at.technikum.swen2_tourplanner_server.dto.requests.TourRequestModel;
+import at.technikum.swen2_tourplanner_server.dto.TourRequestModel;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
@@ -34,6 +34,8 @@ public class TourService {
         Tour existingTour = this.tourRepository.findById(tourRequestModel.getId()).orElseThrow(
                 () -> new RecordNotFoundExc("could not find tour with name: " + tourRequestModel.getName())
         );
+
+        //todo check version
 
         Tour updatedTour = new Tour(
                 tourRequestModel.getName(),

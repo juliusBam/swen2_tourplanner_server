@@ -3,7 +3,6 @@ package at.technikum.swen2_tourplanner_server.restServer.services;
 import at.technikum.swen2_tourplanner_server.BL.ReportGenerator;
 import at.technikum.swen2_tourplanner_server.BL.ReportGeneratorOutput;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
-import at.technikum.swen2_tourplanner_server.dto.responses.TourReport;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import org.springframework.stereotype.Service;
 

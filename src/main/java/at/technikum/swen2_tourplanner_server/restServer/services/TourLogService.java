@@ -2,8 +2,7 @@ package at.technikum.swen2_tourplanner_server.restServer.services;
 
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
-import at.technikum.swen2_tourplanner_server.dto.requests.CreateTourLogReqModel;
-import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
+import at.technikum.swen2_tourplanner_server.dto.CreateTourLogReqModel;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepository;
 import jakarta.transaction.Transactional;
@@ -38,6 +37,8 @@ public class TourLogService {
                     throw new RecordNotFoundExc("Could not find the associated tour with id: " + linkedTourId);
                 }
         );
+
+        //todo check version
 
         TourLog newTourLog = new TourLog(newTourLogReq.getTimeStamp(), newTourLogReq.getComment(),
                                             newTourLogReq.getDifficulty(), newTourLogReq.getTotalTimeMinutes(),

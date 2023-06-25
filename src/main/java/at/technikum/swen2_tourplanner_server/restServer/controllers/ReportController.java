@@ -1,7 +1,6 @@
 package at.technikum.swen2_tourplanner_server.restServer.controllers;
 
 import at.technikum.swen2_tourplanner_server.BL.ReportGeneratorOutput;
-import at.technikum.swen2_tourplanner_server.dto.responses.TourReport;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import at.technikum.swen2_tourplanner_server.restServer.services.ReportService;
 import org.springframework.http.HttpEntity;
@@ -27,9 +26,9 @@ public class ReportController {
 
         ReportGeneratorOutput createdReport = this.reportService.generateTourReport(id);
 
-        header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + createdReport.getReportName());
+        header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + createdReport.reportName());
 
-        return new HttpEntity<byte[]>(createdReport.getReportContent(), header);
+        return new HttpEntity<byte[]>(createdReport.reportContent(), header);
     }
 
     @GetMapping(value = "/summarize")
@@ -40,9 +39,9 @@ public class ReportController {
 
         ReportGeneratorOutput createdReport = this.reportService.generateSummarizeReport();
 
-        header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=summarized_" + createdReport.getReportName());
+        header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=summarized_" + createdReport.reportName());
 
-        return new HttpEntity<byte[]>(createdReport.getReportContent(), header);
+        return new HttpEntity<byte[]>(createdReport.reportContent(), header);
     }
 
 }

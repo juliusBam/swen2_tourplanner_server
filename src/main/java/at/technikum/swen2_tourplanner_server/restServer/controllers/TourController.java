@@ -1,7 +1,7 @@
 package at.technikum.swen2_tourplanner_server.restServer.controllers;
 
 import at.technikum.swen2_tourplanner_server.Logging;
-import at.technikum.swen2_tourplanner_server.dto.requests.TourRequestModel;
+import at.technikum.swen2_tourplanner_server.dto.TourRequestModel;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;

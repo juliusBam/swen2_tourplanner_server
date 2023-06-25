@@ -1,6 +1,6 @@
 package at.technikum.swen2_tourplanner_server.BL.validators;
 
-import at.technikum.swen2_tourplanner_server.dto.requests.CreateTourLogReqModel;
+import at.technikum.swen2_tourplanner_server.dto.CreateTourLogReqModel;
 
 public class TourLogValidator implements IValidator<CreateTourLogReqModel> {
     @Override
