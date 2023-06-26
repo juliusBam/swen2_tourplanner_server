@@ -49,8 +49,8 @@ public class TourLogController extends Logging {
 
     //region Delete Routes
     @DeleteMapping("/{id}")
-    void deleteTourLog(@PathVariable Long id) {
-        this.tourLogService.deleteTourLog(id);
+    Tour deleteTourLog(@PathVariable Long id) {
+        return this.tourLogService.deleteTourLog(id);
     }
     //endregion
 

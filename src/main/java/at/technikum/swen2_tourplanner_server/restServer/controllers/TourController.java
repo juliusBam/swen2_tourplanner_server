@@ -69,7 +69,7 @@ public class TourController extends Logging {
     @DeleteMapping("/{id}")
     void deleteTour(@PathVariable Long id) {
 
-        this.logger.info("Received delete tour req for tour id: " + id);
+        logger.info("Received delete tour req for tour id: " + id);
         tourService.deleteTour(id);
 
     }

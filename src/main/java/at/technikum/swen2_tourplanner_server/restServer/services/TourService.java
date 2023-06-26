@@ -1,5 +1,6 @@
 package at.technikum.swen2_tourplanner_server.restServer.services;
 
+import at.technikum.swen2_tourplanner_server.Logging;
 import at.technikum.swen2_tourplanner_server.dto.TourRequestModel;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class TourService {
+public class TourService extends Logging {
     private final TourRepository tourRepository;
 
     private final IValidator<TourRequestModel> tourValidator;
@@ -32,7 +33,11 @@ public class TourService {
         this.tourValidator.validateUpdate(tourRequestModel);
 
         Tour existingTour = this.tourRepository.findById(tourRequestModel.getId()).orElseThrow(
-                () -> new RecordNotFoundExc("could not find tour with name: " + tourRequestModel.getName())
+                () -> {
+                    Logging.logger.error("Tour to update with id [{}] and name [{}] is not present in the database"
+                                            , tourRequestModel.getId(), tourRequestModel.getName());
+                    return new RecordNotFoundExc("Could not find tour with name: " + tourRequestModel.getName());
+                }
         );
 
         //todo check version
@@ -66,6 +71,7 @@ public class TourService {
 
         } else {
 
+            Logging.logger.error("Tour to delete with id [{}] is not present in the database", id);
             throw new RecordNotFoundExc("Could not find tour with id: " + id);
 
         }
@@ -95,6 +101,7 @@ public class TourService {
     public Tour createTour(TourRequestModel tourRequestModel) {
 
         if (tourRequestModel.getId() != null) {
+            Logging.logger.error("Tour id is set on creation id [{}] and name [{}]", tourRequestModel.getId(), tourRequestModel.getName());
             throw new RecordCreationErrorExc("Tour id cannot be set on creation");
         }
 
@@ -115,8 +122,12 @@ public class TourService {
         Long addedId = this.tourRepository.saveAndFlush(newTour).getId();
         
         Tour addedTour = this.tourRepository.findById(addedId).orElseThrow(
-                () -> new RecordCreationErrorExc("The tour could not be created")
+                () -> {
+                    Logging.logger.error("The created tour with id [{}] and name [{}] could not be found in the database", addedId, tourRequestModel.getName());
+                    return new RecordCreationErrorExc("The tour could not be created");
+                }
         );
+
         return addedTour;
     }
 
@@ -124,7 +135,10 @@ public class TourService {
     public Tour updateCalculatedValues(Long tourToUpdateId, List<TourLog> linkedLogs) {
 
         Tour tourToUpdate = this.tourRepository.findById(tourToUpdateId).orElseThrow(
-                () -> new RecordNotFoundExc("Could not find tour with id: " + tourToUpdateId)
+                () -> {
+                    Logging.logger.error("Error updating the calculated values of tour with id [{}], could not find the tour", tourToUpdateId);
+                    return new RecordNotFoundExc("Could not find tour with id: " + tourToUpdateId);
+                }
         );
 
         int numberOfReviews = linkedLogs.size();

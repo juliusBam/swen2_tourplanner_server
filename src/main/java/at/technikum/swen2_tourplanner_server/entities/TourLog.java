@@ -103,5 +103,9 @@ public class TourLog implements Serializable {
     public void setRating(Rating rating) {
         this.rating = rating;
     }
+
+    public Long getTourId() {
+        return this.tour.getId();
+    }
     //endregion
 }

@@ -1,14 +1,14 @@
 package at.technikum.swen2_tourplanner_server;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class Logging {
 
-    protected final Logger logger;
+    protected static final Logger logger = LogManager.getLogger(Logging.class);
 
-    public Logging() {
-        this.logger = LoggerFactory.getLogger(Logging.class);
-    }
+    //public Logging() {
+        //Logging.logger = LoggerFactory.getLogger(Logging.class);
+    //}
 
 }

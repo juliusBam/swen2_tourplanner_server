@@ -1,17 +1,20 @@
 package at.technikum.swen2_tourplanner_server.restServer.services;
 
+import at.technikum.swen2_tourplanner_server.Logging;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.dto.CreateTourLogReqModel;
+import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepository;
 import jakarta.transaction.Transactional;
+import org.apache.juli.logging.Log;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class TourLogService {
+public class TourLogService extends Logging {
 
     private final TourLogRepository tourLogRepository;
     private final TourService tourService;
@@ -33,8 +36,8 @@ public class TourLogService {
 
         Tour linkedTour = this.tourService.getById(linkedTourId).orElseThrow(
                 () -> {
-                    //todo add logger
-                    throw new RecordNotFoundExc("Could not find the associated tour with id: " + linkedTourId);
+                    Logging.logger.error("Error creating tour log for tour with id [{}], the tour log could not be found in the database", linkedTourId);
+                    return new RecordNotFoundExc("Could not find the associated tour with id: " + linkedTourId);
                 }
         );
 
@@ -53,8 +56,8 @@ public class TourLogService {
 
         return this.tourService.getById(linkedTourId).orElseThrow(
                 () -> {
-                    //todo add logger
-                    throw new RecordNotFoundExc("Could not find the associated tour with id: " + linkedTourId);
+                    Logging.logger.error("Error creating tour log for tour with id [{}], the tour log could not be found in the database", linkedTourId);
+                    return new RecordNotFoundExc("Could not find the associated tour with id: " + linkedTourId);
                 }
         );
 
@@ -65,7 +68,10 @@ public class TourLogService {
 
         //if tour log is not present anymore do not allow an update
         this.tourLogRepository.findById(updatedTourLog.getId()).orElseThrow(
-                () -> new RecordNotFoundExc("Associated tour not found")
+                () -> {
+                    Logging.logger.error("Error updating the tour log with id [{}], the tour log could not be found in the database", updatedTourLog.getId());
+                    return new RecordNotFoundExc("Tour log not found");
+                }
         );
 
         Tour parentTour = this.tourService.getById(updatedTourLog.getTourId()).orElseThrow();
@@ -78,14 +84,36 @@ public class TourLogService {
 
         this.tourLogRepository.saveAndFlush(newTourLog);
 
-        //update tour calculated values  we have to refetch the tour to get the new logs
+        //update tour calculated values, we have to refetch the tour to get the new logs
         this.tourService.updateCalculatedValues(parentTour.getId(), this.getAllByTourId(parentTour.getId()));
 
-        return this.tourService.getById(parentTour.getId()).orElseThrow();
+        return this.tourService.getById(parentTour.getId()).orElseThrow(
+                () -> {
+                    Logging.logger.error("Error updating the tour log with id [{}], the associated tour with id [{}] could not be found in the database", updatedTourLog.getId(), parentTour.getId());
+                    return new RecordCreationErrorExc("Could not find the associated tour");
+                }
+        );
     }
 
     @Transactional
-    public void deleteTourLog(Long tourId) {
-        this.tourLogRepository.deleteById(tourId);
+    public Tour deleteTourLog(Long tourLogId) {
+
+        TourLog tourLogToDelete = this.tourLogRepository.findById(tourLogId).orElseThrow(
+                () -> {
+                    Logging.logger.error("Tour log to delete with id [{}] is not present in the database", tourLogId);
+                    return new RecordNotFoundExc("Could not find tour log with id: " + tourLogId);
+                }
+        );
+
+        Long associatedTourId = tourLogToDelete.getTourId();
+
+        this.tourLogRepository.deleteById(tourLogToDelete.getId());
+
+        this.tourLogRepository.flush();
+
+        List<TourLog> associatedTourLogs = this.tourLogRepository.findTourLogsByTourId(associatedTourId);
+
+        return this.tourService.updateCalculatedValues(associatedTourId, associatedTourLogs);
+
     }
 }
