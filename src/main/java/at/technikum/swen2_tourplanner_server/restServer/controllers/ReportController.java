@@ -3,6 +3,7 @@ package at.technikum.swen2_tourplanner_server.restServer.controllers;
 import at.technikum.swen2_tourplanner_server.BL.ReportGeneratorOutput;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import at.technikum.swen2_tourplanner_server.restServer.services.ReportService;
+import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.IReportService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/report")
 public class ReportController {
-    private final ReportService reportService;
+    private final IReportService reportService;
 
     ReportController(TourRepository tourRepository) {this.reportService = new ReportService(tourRepository);}
 

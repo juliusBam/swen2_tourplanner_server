@@ -6,13 +6,15 @@ import at.technikum.swen2_tourplanner_server.Logging;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.ReportGenerationException;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
+import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.IReportService;
+import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.ITourService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ReportService extends Logging {
-    private final TourService tourService;
+public class ReportService extends Logging implements IReportService {
+    private final ITourService tourService;
 
     private final ReportGenerator reportGenerator;
 
@@ -21,6 +23,7 @@ public class ReportService extends Logging {
         this.reportGenerator = new ReportGenerator();
     }
 
+    @Override
     public ReportGeneratorOutput generateTourReport(Long tourId) {
 
         Tour requestedTour = this.tourService.getById(tourId).orElseThrow(
@@ -34,6 +37,7 @@ public class ReportService extends Logging {
         return this.reportGenerator.generateTourReport(requestedTour);
     }
 
+    @Override
     public ReportGeneratorOutput generateSummarizeReport() {
 
         List<Tour> requestedTours = this.tourService.getAll();

@@ -8,6 +8,7 @@ import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepo
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import at.technikum.swen2_tourplanner_server.restServer.services.TourLogService;
 import at.technikum.swen2_tourplanner_server.restServer.services.TourService;
+import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.ITourLogService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 @RequestMapping("/tourlog")
 public class TourLogController extends Logging {
 
-    private final TourLogService tourLogService;
+    private final ITourLogService tourLogService;
 
     TourLogController(TourLogRepository tourLogRepository, TourRepository tourRepository) {
         this.tourLogService = new TourLogService(tourLogRepository, new TourService(tourRepository));

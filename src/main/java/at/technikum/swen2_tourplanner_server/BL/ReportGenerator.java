@@ -195,6 +195,7 @@ public class ReportGenerator {
 
 
         //fetch the image from the req url for the tour infos
+        //todo the image will be fetched differently
         ImageData imageData = ImageDataFactory.create(tour.getRouteInformation());
 
         Image image = new Image(imageData);

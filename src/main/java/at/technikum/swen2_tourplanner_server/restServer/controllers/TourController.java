@@ -6,6 +6,7 @@ import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import at.technikum.swen2_tourplanner_server.restServer.services.TourService;
+import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.ITourService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 @RequestMapping("/tour")
 public class TourController extends Logging {
 
-    private final TourService tourService;
+    private final ITourService tourService;
 
     TourController(TourRepository tourRepository) {
         this.tourService = new TourService(tourRepository);

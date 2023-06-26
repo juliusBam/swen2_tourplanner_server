@@ -9,6 +9,7 @@ import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoun
 import at.technikum.swen2_tourplanner_server.BL.validators.IValidator;
 import at.technikum.swen2_tourplanner_server.BL.validators.TourValidator;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
+import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.ITourService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class TourService extends Logging {
+public class TourService extends Logging implements ITourService {
     private final TourRepository tourRepository;
 
     private final IValidator<TourRequestModel> tourValidator;
@@ -27,6 +28,7 @@ public class TourService extends Logging {
         this.tourValidator = new TourValidator();
     }
 
+    @Override
     @Transactional
     public Tour updateTour(TourRequestModel tourRequestModel) {
 
@@ -62,6 +64,7 @@ public class TourService extends Logging {
 
     }
 
+    @Override
     @Transactional
     public void deleteTour(Long id) {
 
@@ -78,25 +81,30 @@ public class TourService extends Logging {
 
     }
 
+    @Override
     public void importTour(Tour newTour) {
         //TODO parse the json into a new tour
         this.tourRepository.save(newTour);
     }
 
+    @Override
     public String exportTour(Long id) {
         Optional<Tour> tour = this.tourRepository.findById(id);
         //TODO parse tour into json file and send it back
         return tour.toString();
     }
 
+    @Override
     public List<Tour> getAll() {
         return this.tourRepository.findAll();
     }
 
+    @Override
     public Optional<Tour> getById(Long id) {
         return this.tourRepository.findById(id);
     }
 
+    @Override
     @Transactional
     public Tour createTour(TourRequestModel tourRequestModel) {
 
@@ -131,6 +139,7 @@ public class TourService extends Logging {
         return addedTour;
     }
 
+    @Override
     @Transactional
     public Tour updateCalculatedValues(Long tourToUpdateId, List<TourLog> linkedLogs) {
 
@@ -145,11 +154,11 @@ public class TourService extends Logging {
 
         Double childF = 0.0;
 
-        for (TourLog tourlog: linkedLogs) {
-            Double sum = (double)(tourlog.getDifficulty().ordinal() + tourlog.getRating().ordinal());
+        for (TourLog tourlog : linkedLogs) {
+            Double sum = (double) (tourlog.getDifficulty().ordinal() + tourlog.getRating().ordinal());
 
             if (tourlog.getTotalTimeMinutes() > 90) {
-                sum = sum/2;
+                sum = sum / 2;
             }
 
             childF += sum;

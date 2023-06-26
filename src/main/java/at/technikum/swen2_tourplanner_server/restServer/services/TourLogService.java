@@ -7,28 +7,31 @@ import at.technikum.swen2_tourplanner_server.dto.CreateTourLogReqModel;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepository;
+import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.ITourLogService;
+import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.ITourService;
 import jakarta.transaction.Transactional;
-import org.apache.juli.logging.Log;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class TourLogService extends Logging {
+public class TourLogService extends Logging implements ITourLogService {
 
     private final TourLogRepository tourLogRepository;
-    private final TourService tourService;
+    private final ITourService tourService;
 
     public TourLogService(TourLogRepository tourLogRepository, TourService tourService) {
         this.tourLogRepository = tourLogRepository;
         this.tourService = tourService;
     }
 
+    @Override
     public List<TourLog> getAllByTourId(Long id) {
 
         return this.tourLogRepository.findTourLogsByTourId(id);
     }
 
+    @Override
     @Transactional
     public Tour createTourLog(CreateTourLogReqModel newTourLogReq) {
 
@@ -63,6 +66,7 @@ public class TourLogService extends Logging {
 
     }
 
+    @Override
     @Transactional
     public Tour updateTourLog(CreateTourLogReqModel updatedTourLog) {
 
@@ -95,6 +99,7 @@ public class TourLogService extends Logging {
         );
     }
 
+    @Override
     @Transactional
     public Tour deleteTourLog(Long tourLogId) {
 
