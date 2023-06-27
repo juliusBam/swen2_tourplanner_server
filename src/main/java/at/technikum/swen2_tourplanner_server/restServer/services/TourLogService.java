@@ -3,7 +3,7 @@ package at.technikum.swen2_tourplanner_server.restServer.services;
 import at.technikum.swen2_tourplanner_server.Logging;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
-import at.technikum.swen2_tourplanner_server.dto.CreateTourLogReqModel;
+import at.technikum.swen2_tourplanner_server.dto.TourLogReqModel;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepository;
@@ -28,12 +28,12 @@ public class TourLogService extends Logging implements ITourLogService {
     @Override
     public List<TourLog> getAllByTourId(Long id) {
 
-        return this.tourLogRepository.findTourLogsByTourId(id);
+        return this.tourLogRepository.findByTour_id(id);
     }
 
     @Override
     @Transactional
-    public Tour createTourLog(CreateTourLogReqModel newTourLogReq) {
+    public Tour createTourLog(TourLogReqModel newTourLogReq) {
 
         Long linkedTourId = newTourLogReq.getTourId();
 
@@ -68,7 +68,7 @@ public class TourLogService extends Logging implements ITourLogService {
 
     @Override
     @Transactional
-    public Tour updateTourLog(CreateTourLogReqModel updatedTourLog) {
+    public Tour updateTourLog(TourLogReqModel updatedTourLog) {
 
         //if tour log is not present anymore do not allow an update
         this.tourLogRepository.findById(updatedTourLog.getId()).orElseThrow(
@@ -116,7 +116,7 @@ public class TourLogService extends Logging implements ITourLogService {
 
         this.tourLogRepository.flush();
 
-        List<TourLog> associatedTourLogs = this.tourLogRepository.findTourLogsByTourId(associatedTourId);
+        List<TourLog> associatedTourLogs = this.tourLogRepository.findByTour_id(associatedTourId);
 
         return this.tourService.updateCalculatedValues(associatedTourId, associatedTourLogs);
 

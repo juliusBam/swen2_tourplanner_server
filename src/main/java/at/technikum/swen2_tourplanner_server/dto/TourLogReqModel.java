@@ -3,7 +3,7 @@ package at.technikum.swen2_tourplanner_server.dto;
 import at.technikum.swen2_tourplanner_server.entities.enums.Difficulty;
 import at.technikum.swen2_tourplanner_server.entities.enums.Rating;
 
-public class CreateTourLogReqModel {
+public class TourLogReqModel {
 
         private Long id;
     	private Long timeStamp;
@@ -17,7 +17,7 @@ public class CreateTourLogReqModel {
 
         private Long tourId;
 
-    public CreateTourLogReqModel(Long timeStamp, String comment, Difficulty difficulty, Long totalTimeMinutes, Rating rating, Long tourId) {
+    public TourLogReqModel(Long timeStamp, String comment, Difficulty difficulty, Long totalTimeMinutes, Rating rating, Long tourId) {
         this.timeStamp = timeStamp;
         this.comment = comment;
         this.difficulty = difficulty;
