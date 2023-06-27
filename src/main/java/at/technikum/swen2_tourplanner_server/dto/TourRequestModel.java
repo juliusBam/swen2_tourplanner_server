@@ -2,6 +2,8 @@ package at.technikum.swen2_tourplanner_server.dto;
 
 import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
 
+//todo add param for force update --> see version
+
 public class TourRequestModel {
 
     //region fields

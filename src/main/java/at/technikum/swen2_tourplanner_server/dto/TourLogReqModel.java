@@ -3,6 +3,7 @@ package at.technikum.swen2_tourplanner_server.dto;
 import at.technikum.swen2_tourplanner_server.entities.enums.Difficulty;
 import at.technikum.swen2_tourplanner_server.entities.enums.Rating;
 
+//todo add param for force update --> see version
 public class TourLogReqModel {
 
         private Long id;

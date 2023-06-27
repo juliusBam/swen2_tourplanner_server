@@ -35,7 +35,6 @@ public class TourLogController extends Logging {
     //region Post Routes
     @PostMapping("")
     Tour createTourLog(@RequestBody TourLogReqModel newTourLog) {
-        this.logger.info("Received post req for new tour log for tour id: " + newTourLog.getTourId());
         return tourLogService.createTourLog(newTourLog);
     }
     //endregion
@@ -43,7 +42,6 @@ public class TourLogController extends Logging {
     //region Put Routes
     @PutMapping("")
     Tour updateTourLog(@RequestBody TourLogReqModel updatedTourLog) {
-        //this.logger.info();
         return tourLogService.updateTourLog(updatedTourLog);
     }
     //endregion

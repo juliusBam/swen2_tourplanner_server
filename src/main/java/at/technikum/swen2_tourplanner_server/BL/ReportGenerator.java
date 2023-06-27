@@ -28,6 +28,10 @@ public class ReportGenerator {
 
     private final float PaddingValue = 20;
 
+    private final String apiKey = "CMh8YgwyqDEwVfPW2IDoxhJysaAMZPTG";
+
+    private final String baseUrl = "https://www.mapquestapi.com/staticmap/v5/map";
+
     public ReportGeneratorOutput generateTourReport(Tour tour) {
 
         //we operate with byte arrays, so that we can avoid having to store the file and delete it afterwards
@@ -40,59 +44,16 @@ public class ReportGenerator {
 
                 doc.add(this.createTourBasicInfo(tour));
 
-                doc.add(
-                        new Paragraph("Tour logs")
-                                .setFontSize(this.headerFontSize)
-                );
+                if (tour.getLogs().size() != 0) {
 
-                List tourLogsListForReport = new List(ListNumberingType.DECIMAL);
-
-                java.util.List<TourLog> sortedLogs = new ArrayList<>(tour.getLogs());
-
-                sortedLogs.sort(Comparator.comparing(TourLog::getTimeStamp));
-
-                for (TourLog log : sortedLogs) {
-                    java.util.Date tourLogDate = new Date(new Timestamp(log.getTimeStamp()).getTime());
-
-                    ListItem item = new ListItem();
-
-                    item.add(
-                            new Paragraph(tourLogDate.toString()).setBold()
-                    );
-                    item.add(
-                            new Paragraph(log.getComment())
+                    doc.add(
+                            new Paragraph("Tour logs")
+                                    .setFontSize(this.headerFontSize)
                     );
 
-                    Table tourLogDetailsTable = new Table(2);
+                    doc.add(this.createTourLogsEntries(tour));
 
-                    tourLogDetailsTable.addCell(
-                            this.createCell("Difficulty:", true)
-                    );
-                    tourLogDetailsTable.addCell(
-                            this.createCell(log.getDifficulty().toString().toLowerCase(), true)
-                    );
-
-                    tourLogDetailsTable.addCell(
-                            this.createCell("Rating:", true)
-                    );
-                    tourLogDetailsTable.addCell(
-                            this.createCell(this.convertRating(log.getRating()), true)
-                    );
-
-                    tourLogDetailsTable.addCell(
-                            this.createCell("Needed time (minutes):", true)
-                    );
-                    tourLogDetailsTable.addCell(
-                            this.createCell(log.getTotalTimeMinutes().toString(), true)
-                    );
-
-                    item.add(tourLogDetailsTable);
-                    item.setPaddingBottom(this.PaddingValue);
-
-                    tourLogsListForReport.add(item);
                 }
-
-                doc.add(tourLogsListForReport);
 
             }
 
@@ -109,6 +70,7 @@ public class ReportGenerator {
 
     }
 
+    //todo do not load pictures, not needed, takes too long to load them
     public ReportGeneratorOutput generateSummarizeReport(java.util.List<Tour> allTours) {
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();) {
@@ -196,7 +158,7 @@ public class ReportGenerator {
 
         //fetch the image from the req url for the tour infos
         //todo the image will be fetched differently
-        ImageData imageData = ImageDataFactory.create(tour.getRouteInformation());
+        ImageData imageData = ImageDataFactory.create(this.createTourInformation(tour.getFrom(), tour.getTo(), tour.getRouteInformation()));
 
         Image image = new Image(imageData);
         tourContainer.add(image);
@@ -261,6 +223,67 @@ public class ReportGenerator {
             }
         }
 
+    }
+
+    private String createTourInformation(String from, String to, String boundingBox) {
+        String markerLocations = from + "|marker-start" + "||" + to + "|marker-end";
+        String reqBoundingBox = "boundingBox=" + boundingBox;
+        String keyPart = "?key=" + this.apiKey;
+
+        return this.baseUrl + keyPart + "&" + markerLocations + "&" + reqBoundingBox;
+    }
+
+    private List createTourLogsEntries(Tour tour) {
+
+        List tourLogsListForReport = new List(ListNumberingType.DECIMAL);
+
+        java.util.List<TourLog> sortedLogs = new ArrayList<>(tour.getLogs());
+
+        sortedLogs.sort(Comparator.comparing(TourLog::getTimeStamp));
+
+        for (TourLog log : sortedLogs) {
+            java.util.Date tourLogDate = new Date(new Timestamp(log.getTimeStamp()).getTime());
+
+            ListItem item = new ListItem();
+
+            item.add(
+                    new Paragraph(tourLogDate.toString()).setBold()
+            );
+            item.add(
+                    new Paragraph(log.getComment())
+            );
+
+            Table tourLogDetailsTable = new Table(2);
+
+            tourLogDetailsTable.addCell(
+                    this.createCell("Difficulty:", true)
+            );
+            tourLogDetailsTable.addCell(
+                    this.createCell(log.getDifficulty().toString().toLowerCase(), true)
+            );
+
+            tourLogDetailsTable.addCell(
+                    this.createCell("Rating:", true)
+            );
+            tourLogDetailsTable.addCell(
+                    this.createCell(this.convertRating(log.getRating()), true)
+            );
+
+            tourLogDetailsTable.addCell(
+                    this.createCell("Needed time (minutes):", true)
+            );
+            tourLogDetailsTable.addCell(
+                    this.createCell(log.getTotalTimeMinutes().toString(), true)
+            );
+
+            item.add(tourLogDetailsTable);
+            item.setPaddingBottom(this.PaddingValue);
+
+            tourLogsListForReport.add(item);
+        }
+
+        return tourLogsListForReport;
+        //doc.add(tourLogsListForReport);
     }
 
 }
