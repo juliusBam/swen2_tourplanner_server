@@ -2,6 +2,7 @@ package at.technikum.swen2_tourplanner_server.entities;
 
 import at.technikum.swen2_tourplanner_server.entities.enums.Difficulty;
 import at.technikum.swen2_tourplanner_server.entities.enums.Rating;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 
 //todo add a version number to check the updates
 
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Entity(name = "tour_log")
 public class TourLog implements Serializable {
 

@@ -1,6 +1,9 @@
 package at.technikum.swen2_tourplanner_server.dto;
 
+import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
+
+import java.util.List;
 
 //todo add param for force update --> see version
 
@@ -23,11 +26,13 @@ public class TourRequestModel {
     private Double tourDistanceKilometers;
 
     private String routeInformation;
+
+    private List<TourLogReqModel> tourLogs;
     //endregion
 
     //region constructors
     public TourRequestModel() {}
-    public TourRequestModel(Long id, String name, String description, Vehicle vehicle, String start, String end, Long estimatedTimeSeconds, Double tourDistanceKilometers, String routeInformation)  {
+    public TourRequestModel(Long id, String name, String description, Vehicle vehicle, String start, String end, Long estimatedTimeSeconds, Double tourDistanceKilometers, String routeInformation, List<TourLogReqModel> tourLogs)  {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -37,6 +42,7 @@ public class TourRequestModel {
         this.estimatedTimeSeconds = estimatedTimeSeconds;
         this.tourDistanceKilometers = tourDistanceKilometers;
         this.routeInformation = routeInformation;
+        this.tourLogs = tourLogs;
     }
     //endregion
 
@@ -78,6 +84,14 @@ public class TourRequestModel {
 
     public void setEnd(String end) {
         this.end = end;
+    }
+
+    public List<TourLogReqModel> getTourLogs() {
+        return tourLogs;
+    }
+
+    public void setTourLogs(List<TourLogReqModel> tourLogs) {
+        this.tourLogs = tourLogs;
     }
 
     public Vehicle getVehicle() {

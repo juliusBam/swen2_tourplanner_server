@@ -1,6 +1,7 @@
 package at.technikum.swen2_tourplanner_server.entities;
 
 import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ import java.util.List;
 
 //todo add a version number to check the updates
 
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Entity(name = "tours")
 public class Tour implements Serializable {
 
