@@ -1,7 +1,5 @@
 package at.technikum.swen2_tourplanner_server.dto;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

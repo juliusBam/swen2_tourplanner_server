@@ -4,14 +4,11 @@ import at.technikum.swen2_tourplanner_server.Logging;
 import at.technikum.swen2_tourplanner_server.dto.TourDto;
 import at.technikum.swen2_tourplanner_server.dto.responses.TourResponseDto;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
-import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import at.technikum.swen2_tourplanner_server.restServer.services.TourService;
 import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.ITourService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/tour")

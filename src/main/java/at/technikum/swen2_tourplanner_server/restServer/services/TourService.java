@@ -1,20 +1,26 @@
 package at.technikum.swen2_tourplanner_server.restServer.services;
 
+import at.technikum.swen2_tourplanner_server.BL.StatsCalculator;
 import at.technikum.swen2_tourplanner_server.BL.TourModelConverter;
+import at.technikum.swen2_tourplanner_server.BL.model.AverageStatsModel;
+import at.technikum.swen2_tourplanner_server.BL.model.TourStatsModel;
 import at.technikum.swen2_tourplanner_server.Logging;
 import at.technikum.swen2_tourplanner_server.dto.TourDto;
 import at.technikum.swen2_tourplanner_server.dto.TourStatsDto;
 import at.technikum.swen2_tourplanner_server.dto.responses.TourResponseDto;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
+import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.BL.validators.IValidator;
 import at.technikum.swen2_tourplanner_server.BL.validators.TourValidator;
+import at.technikum.swen2_tourplanner_server.restServer.exceptions.TourStatsException;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.ITourService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,8 +51,6 @@ public class TourService extends Logging implements ITourService {
                 }
         );
 
-        //todo check version
-
         Tour updatedTour = new Tour(
                 tourDto.getName(),
                 tourDto.getDescription(),
@@ -63,18 +67,19 @@ public class TourService extends Logging implements ITourService {
 
         Tour addedTour = this.tourRepository.saveAndFlush(updatedTour);
 
-        //todo calculate stats
+        TourStatsModel tourStatsModel = this.calculateTourStats(addedTour);
+
+
         return new TourResponseDto(
                 new TourStatsDto(
-                        Integer.valueOf(1),
-                        1D,
-                        1D,
-                        1D,
-                        1D
+                        tourStatsModel.popularity(),
+                        tourStatsModel.childFriendliness(),
+                        tourStatsModel.avgTime(),
+                        tourStatsModel.avgRating(),
+                        tourStatsModel.avgDifficulty()
                 ),
                 TourModelConverter.tourEntitytoDto(addedTour)
         );
-        //this.updateCalculatedValues(insertedId, updatedTour.getLogs());
 
     }
 
@@ -104,7 +109,6 @@ public class TourService extends Logging implements ITourService {
     @Override
     public String exportTour(Long id) {
         Optional<Tour> tour = this.tourRepository.findById(id);
-        //TODO parse tour into json file and send it back
         return tour.toString();
     }
 
@@ -117,14 +121,16 @@ public class TourService extends Logging implements ITourService {
         //todo calculate stats
         for (Tour tour : tours) {
 
+            TourStatsModel tourStatsModel = this.calculateTourStats(tour);
+
             tourResponses.add(
                     new TourResponseDto(
                             new TourStatsDto(
-                                Integer.valueOf(1),
-                                    1D,
-                                    1D,
-                                    1D,
-                                    1D
+                                    tourStatsModel.popularity(),
+                                    tourStatsModel.childFriendliness(),
+                                    tourStatsModel.avgTime(),
+                                    tourStatsModel.avgRating(),
+                                    tourStatsModel.avgDifficulty()
                             ),
                             TourModelConverter.tourEntitytoDto(tour)
                     )
@@ -145,14 +151,15 @@ public class TourService extends Logging implements ITourService {
                 }
         );
 
-        //todo calculate stats
+        TourStatsModel tourStatsModel = this.calculateTourStats(tour);
+
         return new TourResponseDto(
                 new TourStatsDto(
-                        Integer.valueOf(1),
-                        1D,
-                        1D,
-                        1D,
-                        1D
+                        tourStatsModel.popularity(),
+                        tourStatsModel.childFriendliness(),
+                        tourStatsModel.avgTime(),
+                        tourStatsModel.avgRating(),
+                        tourStatsModel.avgDifficulty()
                 ),
                 TourModelConverter.tourEntitytoDto(tour)
         );
@@ -195,14 +202,15 @@ public class TourService extends Logging implements ITourService {
                 }
         );
 
-        //todo calculate stats
+        TourStatsModel tourStatsModel = this.calculateTourStats(addedTour);
+
         return new TourResponseDto(
                 new TourStatsDto(
-                        Integer.valueOf(0),
-                        0D,
-                        0D,
-                        0D,
-                        0D
+                        tourStatsModel.popularity(),
+                        tourStatsModel.childFriendliness(),
+                        tourStatsModel.avgTime(),
+                        tourStatsModel.avgRating(),
+                        tourStatsModel.avgDifficulty()
                 ),
                 TourModelConverter.tourEntitytoDto(addedTour)
         );
@@ -251,4 +259,67 @@ public class TourService extends Logging implements ITourService {
 
         return tourToUpdate;
     }*/
+
+    public TourStatsModel calculateTourStats(Long tourId) {
+
+        Tour tour = this.tourRepository.findById(tourId).orElseThrow(
+                () -> {
+                    logger.error(String.format("Could not find tour with id: [{0}] while calculating stats", tourId));
+                    throw new TourStatsException("Could not find tour with id: [" + tourId + "]");
+                }
+        );
+
+        return this.calculateTourStats(tour);
+    }
+
+
+    public TourStatsModel calculateTourStats(Tour tour) throws RuntimeException {
+
+        StatsCalculator statsCalculator = new StatsCalculator();
+
+        Integer popularity = this.calculatePopularity(tour);
+
+        AverageStatsModel averageStatsModel = statsCalculator.calculateAverageStats(tour);
+
+        return new TourStatsModel(
+                popularity, averageStatsModel.childFriendliness(), averageStatsModel.avgTime(),
+                averageStatsModel.avgRating(), averageStatsModel.avgDifficulty()
+        );
+
+    }
+
+    private List<Tour> sortToursByPopularity() {
+
+        List<Tour> tours = this.tourRepository.findAll();
+
+        tours.sort((tour1, tour2) -> {
+            if (tour1.getLogs().size() == tour2.getLogs().size())
+                return 0;
+
+            if (tour1.getLogs().size() > tour2.getLogs().size())
+                return -1;
+
+            return 1;
+        });
+
+        return tours;
+
+    }
+
+    private Integer calculatePopularity(Tour tour) throws RuntimeException {
+
+        List<Tour> sortedTours = this.sortToursByPopularity();
+
+        Optional<Tour> foundTour = sortedTours.stream().filter(tourInList -> tourInList.getId().equals(tour.getId())).findFirst();
+
+        if (foundTour.isEmpty()) {
+            logger.error(String.format("No tour found to calculate the popularity for, tour id [{0}]", tour.getId()));
+            throw new TourStatsException("No tour found to calculate the popularity for");
+        }
+
+        return sortedTours.indexOf(foundTour.get()) + 1;
+
+    }
+
+
 }

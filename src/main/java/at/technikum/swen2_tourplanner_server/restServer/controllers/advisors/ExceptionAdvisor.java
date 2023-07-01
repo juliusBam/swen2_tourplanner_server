@@ -1,9 +1,6 @@
 package at.technikum.swen2_tourplanner_server.restServer.controllers.advisors;
 
-import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
-import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
-import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordUpdateErrorExc;
-import at.technikum.swen2_tourplanner_server.restServer.exceptions.ReportGenerationException;
+import at.technikum.swen2_tourplanner_server.restServer.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,6 +35,13 @@ public class ExceptionAdvisor {
     @ExceptionHandler(ReportGenerationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     String errorGeneratingReport(ReportGenerationException ex) {
+        return ex.getMessage();
+    }
+
+    @ResponseBody
+    @ExceptionHandler(TourStatsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    String errorGeneratingReport(TourStatsException ex) {
         return ex.getMessage();
     }
     //endregion

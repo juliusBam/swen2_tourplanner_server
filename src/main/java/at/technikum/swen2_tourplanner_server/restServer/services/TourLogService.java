@@ -1,20 +1,19 @@
 package at.technikum.swen2_tourplanner_server.restServer.services;
 
 import at.technikum.swen2_tourplanner_server.BL.TourLogModelConverter;
-import at.technikum.swen2_tourplanner_server.BL.TourModelConverter;
+import at.technikum.swen2_tourplanner_server.BL.model.TourStatsModel;
 import at.technikum.swen2_tourplanner_server.Logging;
 import at.technikum.swen2_tourplanner_server.dto.TourStatsDto;
-import at.technikum.swen2_tourplanner_server.dto.responses.TourLogFetchResponseDto;
 import at.technikum.swen2_tourplanner_server.dto.responses.TourLogManipulationResponseDto;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.dto.TourLogDto;
-import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepository;
 import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.ITourLogService;
 import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.ITourService;
 import jakarta.transaction.Transactional;
+import org.aspectj.apache.bcel.classfile.annotation.RuntimeInvisAnnos;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -61,15 +60,25 @@ public class TourLogService extends Logging implements ITourLogService {
 
         TourLog createdLog = this.tourLogRepository.saveAndFlush(newTourLog);
 
-        //todo calculate stats
+        TourStatsModel tourStatsModel = null;
+
+        try {
+
+            tourStatsModel = this.tourService.calculateTourStats(linkedTourId);
+
+        } catch (RuntimeException e) {
+
+        }
+
+
         return new TourLogManipulationResponseDto(
                 TourLogModelConverter.tourLogEntityToDto(createdLog),
                 new TourStatsDto(
-                        Integer.valueOf(0),
-                        0D,
-                        0D,
-                        0D,
-                        0D
+                        tourStatsModel.popularity(),
+                        tourStatsModel.childFriendliness(),
+                        tourStatsModel.avgTime(),
+                        tourStatsModel.avgRating(),
+                        tourStatsModel.avgDifficulty()
                 )
         );
 
@@ -97,15 +106,16 @@ public class TourLogService extends Logging implements ITourLogService {
 
         TourLog createdLog = this.tourLogRepository.saveAndFlush(newTourLog);
 
-        //todo calculate stats
+        TourStatsModel tourStatsModel = this.tourService.calculateTourStats(updatedTourLog.getTourId());
+
         return new TourLogManipulationResponseDto(
                 TourLogModelConverter.tourLogEntityToDto(createdLog),
                 new TourStatsDto(
-                        Integer.valueOf(0),
-                        0D,
-                        0D,
-                        0D,
-                        0D
+                        tourStatsModel.popularity(),
+                        tourStatsModel.childFriendliness(),
+                        tourStatsModel.avgTime(),
+                        tourStatsModel.avgRating(),
+                        tourStatsModel.avgDifficulty()
                 )
         );
 
@@ -122,18 +132,24 @@ public class TourLogService extends Logging implements ITourLogService {
                 }
         );
 
+        Long associatedTour = tourLogToDelete.getTourId();
+
         this.tourLogRepository.deleteById(tourLogToDelete.getId());
 
         this.tourLogRepository.flush();
 
+        //todo fetch the associatedTour before
+        TourStatsModel tourStatsModel = this.tourService.calculateTourStats(associatedTour);
+
         //todo calculate stats
         TourLogManipulationResponseDto tourLogManipulationResponseDto = new TourLogManipulationResponseDto();
-        tourLogManipulationResponseDto.setTourStats(new TourStatsDto(
-                Integer.valueOf(0),
-                0D,
-                0D,
-                0D,
-                0D
+        tourLogManipulationResponseDto.setTourStats(
+                new TourStatsDto(
+                tourStatsModel.popularity(),
+                tourStatsModel.childFriendliness(),
+                tourStatsModel.avgTime(),
+                tourStatsModel.avgRating(),
+                tourStatsModel.avgDifficulty()
         ));
 
         return tourLogManipulationResponseDto;

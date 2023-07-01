@@ -97,17 +97,18 @@ public class ReportGenerator {
 
                     Table averageStatsTable = new Table(2);
 
+                    //TODO use the calculate stats method of tour service
                     averageStatsTable.addCell(this.createCell("Popularity:", true));
                     //averageStatsTable.addCell(this.createCell(tour.getPopularity().toString(), true));
 
                     averageStatsTable.addCell(this.createCell("Average time (minutes):", true));
-                    averageStatsTable.addCell(this.createCell(tour.getAvgTime().toString(), true));
+                    //averageStatsTable.addCell(this.createCell(tour.getAvgTime().toString(), true));
 
                     averageStatsTable.addCell(this.createCell("Average difficulty:", true));
-                    averageStatsTable.addCell(this.createCell(tour.getAvgDifficulty().toString(), true));
+                    //averageStatsTable.addCell(this.createCell(tour.getAvgDifficulty().toString(), true));
 
                     averageStatsTable.addCell(this.createCell("Average rating:", true));
-                    averageStatsTable.addCell(this.createCell(tour.getAvgRating().toString(), true));
+                    //averageStatsTable.addCell(this.createCell(tour.getAvgRating().toString(), true));
 
                     tourEntry.add(averageStatsTable);
 
