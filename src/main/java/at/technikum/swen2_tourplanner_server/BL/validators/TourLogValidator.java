@@ -1,17 +1,17 @@
 package at.technikum.swen2_tourplanner_server.BL.validators;
 
-import at.technikum.swen2_tourplanner_server.dto.TourLogReqModel;
+import at.technikum.swen2_tourplanner_server.dto.TourLogDto;
 
 //todo implement
 
-public class TourLogValidator implements IValidator<TourLogReqModel> {
+public class TourLogValidator implements IValidator<TourLogDto> {
     @Override
-    public void validateCreation(TourLogReqModel entity) throws RuntimeException {
+    public void validateCreation(TourLogDto entity) throws RuntimeException {
 
     }
 
     @Override
-    public void validateUpdate(TourLogReqModel entity) throws RuntimeException {
+    public void validateUpdate(TourLogDto entity) throws RuntimeException {
 
     }
 }

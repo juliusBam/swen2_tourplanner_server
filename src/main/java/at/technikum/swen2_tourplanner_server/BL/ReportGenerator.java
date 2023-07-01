@@ -17,7 +17,7 @@ import com.itextpdf.layout.properties.ListNumberingType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -98,7 +98,7 @@ public class ReportGenerator {
                     Table averageStatsTable = new Table(2);
 
                     averageStatsTable.addCell(this.createCell("Popularity:", true));
-                    averageStatsTable.addCell(this.createCell(tour.getPopularity().toString(), true));
+                    //averageStatsTable.addCell(this.createCell(tour.getPopularity().toString(), true));
 
                     averageStatsTable.addCell(this.createCell("Average time (minutes):", true));
                     averageStatsTable.addCell(this.createCell(tour.getAvgTime().toString(), true));
@@ -242,12 +242,14 @@ public class ReportGenerator {
         sortedLogs.sort(Comparator.comparing(TourLog::getTimeStamp));
 
         for (TourLog log : sortedLogs) {
-            java.util.Date tourLogDate = new Date(new Timestamp(log.getTimeStamp()).getTime());
+
+            Date tourLogDate = new Date(log.getTimeStamp()*1000L);
+            String formattedDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(tourLogDate);
 
             ListItem item = new ListItem();
 
             item.add(
-                    new Paragraph(tourLogDate.toString()).setBold()
+                    new Paragraph(formattedDate).setBold()
             );
             item.add(
                     new Paragraph(log.getComment())

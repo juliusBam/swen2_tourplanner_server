@@ -1,19 +1,19 @@
 package at.technikum.swen2_tourplanner_server.BL.validators;
 
-import at.technikum.swen2_tourplanner_server.dto.TourRequestModel;
+import at.technikum.swen2_tourplanner_server.dto.TourDto;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordUpdateErrorExc;
 
-public class TourValidator implements IValidator<TourRequestModel> {
+public class TourValidator implements IValidator<TourDto> {
 
     @Override
-    public void validateCreation(TourRequestModel tourRequestModel) throws RuntimeException {
+    public void validateCreation(TourDto tourDto) throws RuntimeException {
 
-        if (tourRequestModel == null) {
+        if (tourDto == null) {
             throw new RecordCreationErrorExc("Tour model is null");
         }
 
-        if (tourRequestModel.getStart().equals(tourRequestModel.getEnd())) {
+        if (tourDto.getStart().equals(tourDto.getEnd())) {
             throw new RecordCreationErrorExc("Tour start and tour end have to be different");
         }
 
@@ -21,15 +21,15 @@ public class TourValidator implements IValidator<TourRequestModel> {
 
     //todo add a method to check if the "version" is valid
     @Override
-    public void validateUpdate(TourRequestModel tourRequestModel) throws RuntimeException {
+    public void validateUpdate(TourDto tourDto) throws RuntimeException {
 
         try {
-            this.validateCreation(tourRequestModel);
+            this.validateCreation(tourDto);
         } catch (RecordCreationErrorExc e) {
             throw new RecordUpdateErrorExc(e.getMessage());
         }
 
-        if (tourRequestModel.getId() == null) {
+        if (tourDto.getId() == null) {
             throw new RecordUpdateErrorExc("Tour id has to be set");
         }
 

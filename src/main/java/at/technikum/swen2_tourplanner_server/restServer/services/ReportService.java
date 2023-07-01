@@ -26,7 +26,7 @@ public class ReportService extends Logging implements IReportService {
     @Override
     public ReportGeneratorOutput generateTourReport(Long tourId) {
 
-        Tour requestedTour = this.tourService.getById(tourId).orElseThrow(
+        Tour requestedTour = this.tourService.getByIdEntityModel(tourId).orElseThrow(
                 () -> {
 
                     Logging.logger.error("Error generating report for tour with id [{}], tour could not be found in the database", tourId);
@@ -40,7 +40,7 @@ public class ReportService extends Logging implements IReportService {
     @Override
     public ReportGeneratorOutput generateSummarizeReport() {
 
-        List<Tour> requestedTours = this.tourService.getAll();
+        List<Tour> requestedTours = this.tourService.getAllEntityModel();
 
         if (requestedTours.size() == 0) {
             Logging.logger.error("Error generating summary report, but no reports could be found in the database");

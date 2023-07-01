@@ -1,13 +1,18 @@
 package at.technikum.swen2_tourplanner_server.dto;
 
-import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 //todo add param for force update --> see version
-
-public class TourRequestModel {
+@Getter
+@Setter
+@AllArgsConstructor
+public class TourDto {
 
     //region fields
     private Long id;
@@ -27,12 +32,12 @@ public class TourRequestModel {
 
     private String routeInformation;
 
-    private List<TourLogReqModel> tourLogs;
+    private List<TourLogDto> tourLogs;
     //endregion
 
     //region constructors
-    public TourRequestModel() {}
-    public TourRequestModel(Long id, String name, String description, Vehicle vehicle, String start, String end, Long estimatedTimeSeconds, Double tourDistanceKilometers, String routeInformation, List<TourLogReqModel> tourLogs)  {
+    public TourDto() {}
+    public TourDto(Long id, String name, String description, Vehicle vehicle, String start, String end, Long estimatedTimeSeconds, Double tourDistanceKilometers, String routeInformation, List<TourLogDto> tourLogs)  {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -86,11 +91,11 @@ public class TourRequestModel {
         this.end = end;
     }
 
-    public List<TourLogReqModel> getTourLogs() {
+    public List<TourLogDto> getTourLogs() {
         return tourLogs;
     }
 
-    public void setTourLogs(List<TourLogReqModel> tourLogs) {
+    public void setTourLogs(List<TourLogDto> tourLogs) {
         this.tourLogs = tourLogs;
     }
 

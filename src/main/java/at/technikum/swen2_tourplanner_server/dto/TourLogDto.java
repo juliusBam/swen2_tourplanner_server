@@ -2,9 +2,18 @@ package at.technikum.swen2_tourplanner_server.dto;
 
 import at.technikum.swen2_tourplanner_server.entities.enums.Difficulty;
 import at.technikum.swen2_tourplanner_server.entities.enums.Rating;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 //todo add param for force update --> see version
-public class TourLogReqModel {
+
+@Getter
+@Setter
+public class TourLogDto {
+    public TourLogDto() {
+    }
 
         private Long id;
     	private Long timeStamp;
@@ -18,7 +27,17 @@ public class TourLogReqModel {
 
         private Long tourId;
 
-    public TourLogReqModel(Long timeStamp, String comment, Difficulty difficulty, Long totalTimeMinutes, Rating rating, Long tourId) {
+    public TourLogDto(Long timeStamp, String comment, Difficulty difficulty, Long totalTimeMinutes, Rating rating, Long tourId) {
+        this.timeStamp = timeStamp;
+        this.comment = comment;
+        this.difficulty = difficulty;
+        this.totalTimeMinutes = totalTimeMinutes;
+        this.rating = rating;
+        this.tourId = tourId;
+    }
+
+    public TourLogDto(Long tourLogId, Long timeStamp, String comment, Difficulty difficulty, Long totalTimeMinutes, Rating rating, Long tourId) {
+        this.id = tourLogId;
         this.timeStamp = timeStamp;
         this.comment = comment;
         this.difficulty = difficulty;

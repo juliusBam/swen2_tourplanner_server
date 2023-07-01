@@ -1,7 +1,8 @@
 package at.technikum.swen2_tourplanner_server.restServer.controllers;
 
 import at.technikum.swen2_tourplanner_server.Logging;
-import at.technikum.swen2_tourplanner_server.dto.TourRequestModel;
+import at.technikum.swen2_tourplanner_server.dto.TourDto;
+import at.technikum.swen2_tourplanner_server.dto.responses.TourResponseDto;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
@@ -26,15 +27,13 @@ public class TourController extends Logging {
 
     //region Get Routes
     @GetMapping("")
-    List<Tour> all() {
+    List<TourResponseDto> all() {
         return tourService.getAll();
     }
 
     @GetMapping("/{id}")
-    Tour getTour(@PathVariable Long id) {
-        return tourService.getById(id).orElseThrow(
-                () -> new RecordNotFoundExc("tour not found")
-        );
+    TourResponseDto getTour(@PathVariable Long id) {
+        return tourService.getById(id);
     }
 
     @GetMapping("/export/{id}")
@@ -45,9 +44,9 @@ public class TourController extends Logging {
 
     //region Post Routes
     @PostMapping(value = "")
-    Tour createTour(@RequestBody TourRequestModel tourRequestModel) {
+    TourResponseDto createTour(@RequestBody TourDto tourDto) {
 
-            return this.tourService.createTour(tourRequestModel);
+            return this.tourService.createTour(tourDto);
 
     }
 
@@ -59,9 +58,9 @@ public class TourController extends Logging {
 
     //region Put Routes
     @PutMapping(value = "")
-    Tour updateTour(@RequestBody TourRequestModel tourRequestModel) {
+    TourResponseDto updateTour(@RequestBody TourDto tourDto) {
 
-            return tourService.updateTour(tourRequestModel);
+            return tourService.updateTour(tourDto);
 
     }
     //endregion

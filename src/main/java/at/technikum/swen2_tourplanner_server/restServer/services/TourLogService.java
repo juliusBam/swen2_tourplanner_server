@@ -1,9 +1,14 @@
 package at.technikum.swen2_tourplanner_server.restServer.services;
 
+import at.technikum.swen2_tourplanner_server.BL.TourLogModelConverter;
+import at.technikum.swen2_tourplanner_server.BL.TourModelConverter;
 import at.technikum.swen2_tourplanner_server.Logging;
+import at.technikum.swen2_tourplanner_server.dto.TourStatsDto;
+import at.technikum.swen2_tourplanner_server.dto.responses.TourLogFetchResponseDto;
+import at.technikum.swen2_tourplanner_server.dto.responses.TourLogManipulationResponseDto;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
-import at.technikum.swen2_tourplanner_server.dto.TourLogReqModel;
+import at.technikum.swen2_tourplanner_server.dto.TourLogDto;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepository;
@@ -26,18 +31,20 @@ public class TourLogService extends Logging implements ITourLogService {
     }
 
     @Override
-    public List<TourLog> getAllByTourId(Long id) {
+    public List<TourLogDto> getAllByTourId(Long id) {
 
-        return this.tourLogRepository.findByTour_id(id);
+        List<TourLog> tourLogs = this.tourLogRepository.findByTour_id(id);
+
+        return tourLogs.stream().map(TourLogModelConverter::tourLogEntityToDto).toList();
     }
 
     @Override
     @Transactional
-    public Tour createTourLog(TourLogReqModel newTourLogReq) {
+    public TourLogManipulationResponseDto createTourLog(TourLogDto newTourLogReq) {
 
         Long linkedTourId = newTourLogReq.getTourId();
 
-        Tour linkedTour = this.tourService.getById(linkedTourId).orElseThrow(
+        Tour linkedTour = this.tourService.getByIdEntityModel(linkedTourId).orElseThrow(
                 () -> {
                     Logging.logger.error("Error creating tour log for tour with id [{}], the tour log could not be found in the database", linkedTourId);
                     return new RecordNotFoundExc("Could not find the associated tour with id: " + linkedTourId);
@@ -52,23 +59,25 @@ public class TourLogService extends Logging implements ITourLogService {
 
         linkedTour.addLog(newTourLog);
 
-        Long newTourLogId = this.tourLogRepository.saveAndFlush(newTourLog).getId();
+        TourLog createdLog = this.tourLogRepository.saveAndFlush(newTourLog);
 
-        //update tour calculated values, we have to refetch the tour to get the new logs
-        this.tourService.updateCalculatedValues(linkedTour.getId(), this.getAllByTourId(linkedTour.getId()));
-
-        return this.tourService.getById(linkedTourId).orElseThrow(
-                () -> {
-                    Logging.logger.error("Error creating tour log for tour with id [{}], the tour log could not be found in the database", linkedTourId);
-                    return new RecordNotFoundExc("Could not find the associated tour with id: " + linkedTourId);
-                }
+        //todo calculate stats
+        return new TourLogManipulationResponseDto(
+                TourLogModelConverter.tourLogEntityToDto(createdLog),
+                new TourStatsDto(
+                        Integer.valueOf(0),
+                        0D,
+                        0D,
+                        0D,
+                        0D
+                )
         );
 
     }
 
     @Override
     @Transactional
-    public Tour updateTourLog(TourLogReqModel updatedTourLog) {
+    public TourLogManipulationResponseDto updateTourLog(TourLogDto updatedTourLog) {
 
         //if tour log is not present anymore do not allow an update
         this.tourLogRepository.findById(updatedTourLog.getId()).orElseThrow(
@@ -78,7 +87,7 @@ public class TourLogService extends Logging implements ITourLogService {
                 }
         );
 
-        Tour parentTour = this.tourService.getById(updatedTourLog.getTourId()).orElseThrow();
+        Tour parentTour = this.tourService.getByIdEntityModel(updatedTourLog.getTourId()).orElseThrow();
 
         TourLog newTourLog = new TourLog(updatedTourLog.getTimeStamp(), updatedTourLog.getComment(),
                 updatedTourLog.getDifficulty(), updatedTourLog.getTotalTimeMinutes(),
@@ -86,22 +95,25 @@ public class TourLogService extends Logging implements ITourLogService {
 
         newTourLog.setId(updatedTourLog.getId());
 
-        this.tourLogRepository.saveAndFlush(newTourLog);
+        TourLog createdLog = this.tourLogRepository.saveAndFlush(newTourLog);
 
-        //update tour calculated values, we have to refetch the tour to get the new logs
-        this.tourService.updateCalculatedValues(parentTour.getId(), this.getAllByTourId(parentTour.getId()));
-
-        return this.tourService.getById(parentTour.getId()).orElseThrow(
-                () -> {
-                    Logging.logger.error("Error updating the tour log with id [{}], the associated tour with id [{}] could not be found in the database", updatedTourLog.getId(), parentTour.getId());
-                    return new RecordCreationErrorExc("Could not find the associated tour");
-                }
+        //todo calculate stats
+        return new TourLogManipulationResponseDto(
+                TourLogModelConverter.tourLogEntityToDto(createdLog),
+                new TourStatsDto(
+                        Integer.valueOf(0),
+                        0D,
+                        0D,
+                        0D,
+                        0D
+                )
         );
+
     }
 
     @Override
     @Transactional
-    public Tour deleteTourLog(Long tourLogId) {
+    public TourLogManipulationResponseDto deleteTourLog(Long tourLogId) {
 
         TourLog tourLogToDelete = this.tourLogRepository.findById(tourLogId).orElseThrow(
                 () -> {
@@ -110,15 +122,21 @@ public class TourLogService extends Logging implements ITourLogService {
                 }
         );
 
-        Long associatedTourId = tourLogToDelete.getTourId();
-
         this.tourLogRepository.deleteById(tourLogToDelete.getId());
 
         this.tourLogRepository.flush();
 
-        List<TourLog> associatedTourLogs = this.tourLogRepository.findByTour_id(associatedTourId);
+        //todo calculate stats
+        TourLogManipulationResponseDto tourLogManipulationResponseDto = new TourLogManipulationResponseDto();
+        tourLogManipulationResponseDto.setTourStats(new TourStatsDto(
+                Integer.valueOf(0),
+                0D,
+                0D,
+                0D,
+                0D
+        ));
 
-        return this.tourService.updateCalculatedValues(associatedTourId, associatedTourLogs);
+        return tourLogManipulationResponseDto;
 
     }
 }

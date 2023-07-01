@@ -1,9 +1,11 @@
 package at.technikum.swen2_tourplanner_server.restServer.services;
 
+import at.technikum.swen2_tourplanner_server.BL.TourModelConverter;
 import at.technikum.swen2_tourplanner_server.Logging;
-import at.technikum.swen2_tourplanner_server.dto.TourRequestModel;
+import at.technikum.swen2_tourplanner_server.dto.TourDto;
+import at.technikum.swen2_tourplanner_server.dto.TourStatsDto;
+import at.technikum.swen2_tourplanner_server.dto.responses.TourResponseDto;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
-import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.BL.validators.IValidator;
@@ -13,6 +15,7 @@ import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.ITou
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +24,7 @@ import java.util.Optional;
 public class TourService extends Logging implements ITourService {
     private final TourRepository tourRepository;
 
-    private final IValidator<TourRequestModel> tourValidator;
+    private final IValidator<TourDto> tourValidator;
 
     public TourService(TourRepository tourRepository) {
         this.tourRepository = tourRepository;
@@ -30,37 +33,48 @@ public class TourService extends Logging implements ITourService {
 
     @Override
     @Transactional
-    public Tour updateTour(TourRequestModel tourRequestModel) {
+    public TourResponseDto updateTour(TourDto tourDto) {
 
-        this.tourValidator.validateUpdate(tourRequestModel);
+        this.tourValidator.validateUpdate(tourDto);
 
-        Tour existingTour = this.tourRepository.findById(tourRequestModel.getId()).orElseThrow(
+        Tour existingTour = this.tourRepository.findById(tourDto.getId()).orElseThrow(
                 () -> {
                     Logging.logger.error("Tour to update with id [{}] and name [{}] is not present in the database"
-                                            , tourRequestModel.getId(), tourRequestModel.getName());
-                    return new RecordNotFoundExc("Could not find tour with name: " + tourRequestModel.getName());
+                                            , tourDto.getId(), tourDto.getName());
+                    return new RecordNotFoundExc("Could not find tour with name: " + tourDto.getName());
                 }
         );
 
         //todo check version
 
         Tour updatedTour = new Tour(
-                tourRequestModel.getName(),
-                tourRequestModel.getDescription(),
-                tourRequestModel.getVehicle(),
-                tourRequestModel.getStart(),
-                tourRequestModel.getEnd(),
-                tourRequestModel.getEstimatedTimeSeconds(),
-                tourRequestModel.getTourDistanceKilometers(),
-                tourRequestModel.getRouteInformation(),
+                tourDto.getName(),
+                tourDto.getDescription(),
+                tourDto.getVehicle(),
+                tourDto.getStart(),
+                tourDto.getEnd(),
+                tourDto.getEstimatedTimeSeconds(),
+                tourDto.getTourDistanceKilometers(),
+                tourDto.getRouteInformation(),
                 existingTour.getLogs()
         );
 
-        updatedTour.setId(tourRequestModel.getId());
+        updatedTour.setId(tourDto.getId());
 
-        Long insertedId = this.tourRepository.saveAndFlush(updatedTour).getId();
+        Tour addedTour = this.tourRepository.saveAndFlush(updatedTour);
 
-        return this.updateCalculatedValues(insertedId, updatedTour.getLogs());
+        //todo calculate stats
+        return new TourResponseDto(
+                new TourStatsDto(
+                        Integer.valueOf(1),
+                        1D,
+                        1D,
+                        1D,
+                        1D
+                ),
+                TourModelConverter.tourEntitytoDto(addedTour)
+        );
+        //this.updateCalculatedValues(insertedId, updatedTour.getLogs());
 
     }
 
@@ -95,35 +109,80 @@ public class TourService extends Logging implements ITourService {
     }
 
     @Override
-    public List<Tour> getAll() {
-        return this.tourRepository.findAll();
+    public List<TourResponseDto> getAll() {
+        List<Tour> tours = this.tourRepository.findAll();
+
+        List<TourResponseDto> tourResponses = new ArrayList<>();
+
+        //todo calculate stats
+        for (Tour tour : tours) {
+
+            tourResponses.add(
+                    new TourResponseDto(
+                            new TourStatsDto(
+                                Integer.valueOf(1),
+                                    1D,
+                                    1D,
+                                    1D,
+                                    1D
+                            ),
+                            TourModelConverter.tourEntitytoDto(tour)
+                    )
+            );
+
+        }
+
+        return tourResponses;
     }
 
     @Override
-    public Optional<Tour> getById(Long id) {
+    public TourResponseDto getById(Long id) {
+
+        Tour tour = this.tourRepository.findById(id).orElseThrow(
+                () -> {
+                    Logging.logger.error("Tour to fetch with id [{}] is not present in the database", id);
+                    throw new RecordNotFoundExc("Could not find tour with id: " + id);
+                }
+        );
+
+        //todo calculate stats
+        return new TourResponseDto(
+                new TourStatsDto(
+                        Integer.valueOf(1),
+                        1D,
+                        1D,
+                        1D,
+                        1D
+                ),
+                TourModelConverter.tourEntitytoDto(tour)
+        );
+    }
+
+    @Override
+    public Optional<Tour> getByIdEntityModel(Long id) {
         return this.tourRepository.findById(id);
     }
 
     @Override
     @Transactional
-    public Tour createTour(TourRequestModel tourRequestModel) {
+    public TourResponseDto createTour(TourDto tourDto) {
 
-        if (tourRequestModel.getId() != null) {
-            Logging.logger.error("Tour id is set on creation id [{}] and name [{}]", tourRequestModel.getId(), tourRequestModel.getName());
+        if (tourDto.getId() != null) {
+            Logging.logger.error("Tour id is set on creation id [{}] and name [{}]", tourDto.getId(), tourDto.getName());
             throw new RecordCreationErrorExc("Tour id cannot be set on creation");
         }
 
-        this.tourValidator.validateCreation(tourRequestModel);
+        this.tourValidator.validateCreation(tourDto);
 
         Tour newTour = new Tour(
-                tourRequestModel.getName(),
-                tourRequestModel.getDescription(),
-                tourRequestModel.getVehicle(),
-                tourRequestModel.getStart(),
-                tourRequestModel.getEnd(),
-                tourRequestModel.getEstimatedTimeSeconds(),
-                tourRequestModel.getTourDistanceKilometers(),
-                tourRequestModel.getRouteInformation(),
+                tourDto.getName(),
+                tourDto.getDescription(),
+                tourDto.getVehicle(),
+                tourDto.getStart(),
+                tourDto.getEnd(),
+                tourDto.getEstimatedTimeSeconds(),
+                tourDto.getTourDistanceKilometers(),
+                tourDto.getRouteInformation(),
                 Collections.emptyList()
         );
 
@@ -131,15 +190,30 @@ public class TourService extends Logging implements ITourService {
         
         Tour addedTour = this.tourRepository.findById(addedId).orElseThrow(
                 () -> {
-                    Logging.logger.error("The created tour with id [{}] and name [{}] could not be found in the database", addedId, tourRequestModel.getName());
+                    Logging.logger.error("The created tour with id [{}] and name [{}] could not be found in the database", addedId, tourDto.getName());
                     return new RecordCreationErrorExc("The tour could not be created");
                 }
         );
 
-        return addedTour;
+        //todo calculate stats
+        return new TourResponseDto(
+                new TourStatsDto(
+                        Integer.valueOf(0),
+                        0D,
+                        0D,
+                        0D,
+                        0D
+                ),
+                TourModelConverter.tourEntitytoDto(addedTour)
+        );
     }
 
     @Override
+    public List<Tour> getAllEntityModel() {
+        return this.tourRepository.findAll();
+    }
+
+    /*@Override
     @Transactional
     public Tour updateCalculatedValues(Long tourToUpdateId, List<TourLog> linkedLogs) {
 
@@ -176,5 +250,5 @@ public class TourService extends Logging implements ITourService {
         this.tourRepository.save(tourToUpdate);
 
         return tourToUpdate;
-    }
+    }*/
 }

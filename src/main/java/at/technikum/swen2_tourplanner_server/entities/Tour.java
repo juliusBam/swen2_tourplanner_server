@@ -69,11 +69,11 @@ public class Tour implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "tour")
     private List<TourLog> logs;
 
-    @Column(name = "popularity")
-    private Integer popularity;
+    //@Column(name = "popularity")
+    //private Integer popularity;
 
-    @Column(name = "child_friendliness")
-    private Double childFriendliness;
+    //@Column(name = "child_friendliness")
+    //private Double childFriendliness;
     //endregion
 
     //region constructors
@@ -135,12 +135,12 @@ public class Tour implements Serializable {
         return this.logs;
     }
 
-    public Integer getPopularity() {
+    /*public Integer getPopularity() {
         return popularity;
     }
     public Double getChildFriendliness() {
         return childFriendliness;
-    }
+    }*/
     //endregion
 
     //region setters
@@ -148,13 +148,13 @@ public class Tour implements Serializable {
         this.id = id;
     }
 
-    public void setPopularity(Integer popularity) {
+    /*public void setPopularity(Integer popularity) {
         this.popularity = popularity;
     }
 
     public void setChildFriendliness(Double childFriendliness) {
         this.childFriendliness = childFriendliness;
-    }
+    }*/
 
     public void setLogs(List<TourLog> newLogs) {
         this.logs = newLogs;

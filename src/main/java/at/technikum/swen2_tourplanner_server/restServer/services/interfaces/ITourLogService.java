@@ -1,6 +1,8 @@
 package at.technikum.swen2_tourplanner_server.restServer.services.interfaces;
 
-import at.technikum.swen2_tourplanner_server.dto.TourLogReqModel;
+import at.technikum.swen2_tourplanner_server.dto.TourLogDto;
+import at.technikum.swen2_tourplanner_server.dto.responses.TourLogFetchResponseDto;
+import at.technikum.swen2_tourplanner_server.dto.responses.TourLogManipulationResponseDto;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import jakarta.transaction.Transactional;
@@ -8,14 +10,14 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 
 public interface ITourLogService {
-    List<TourLog> getAllByTourId(Long id);
+    List<TourLogDto> getAllByTourId(Long id);
 
     @Transactional
-    Tour createTourLog(TourLogReqModel newTourLogReq);
+    TourLogManipulationResponseDto createTourLog(TourLogDto newTourLogReq);
 
     @Transactional
-    Tour updateTourLog(TourLogReqModel updatedTourLog);
+    TourLogManipulationResponseDto updateTourLog(TourLogDto updatedTourLog);
 
     @Transactional
-    Tour deleteTourLog(Long tourLogId);
+    TourLogManipulationResponseDto deleteTourLog(Long tourLogId);
 }
