@@ -14,6 +14,7 @@ import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.ListNumberingType;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,7 +29,8 @@ public class ReportGenerator {
 
     private final float PaddingValue = 20;
 
-    private final String apiKey = "CMh8YgwyqDEwVfPW2IDoxhJysaAMZPTG";
+    @Value("${user.mapQuest.Key}")
+    private String apiKey;
 
     private final String baseUrl = "https://www.mapquestapi.com/staticmap/v5/map";
 
