@@ -4,13 +4,11 @@ import at.technikum.swen2_tourplanner_server.BL.ReportGeneratorOutput;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import at.technikum.swen2_tourplanner_server.restServer.services.ReportService;
 import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.IReportService;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/report")
@@ -20,12 +18,12 @@ public class ReportController {
     ReportController(TourRepository tourRepository) {this.reportService = new ReportService(tourRepository);}
 
     @GetMapping(value = "/{id}")
-    HttpEntity<byte[]> getReport(@PathVariable Long id) {
+    HttpEntity<byte[]> getReport(@PathVariable Long id, @RequestParam String sessionId) {
 
         HttpHeaders header = new HttpHeaders();
         header.setContentType(MediaType.APPLICATION_PDF);
 
-        ReportGeneratorOutput createdReport = this.reportService.generateTourReport(id);
+        ReportGeneratorOutput createdReport = this.reportService.generateTourReport(id, sessionId);
 
         header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + createdReport.reportName());
 

@@ -24,7 +24,7 @@ public class ReportService extends Logging implements IReportService {
     }
 
     @Override
-    public ReportGeneratorOutput generateTourReport(Long tourId) {
+    public ReportGeneratorOutput generateTourReport(Long tourId, String sessionId) {
 
         Tour requestedTour = this.tourService.getByIdEntityModel(tourId).orElseThrow(
                 () -> {
@@ -34,7 +34,7 @@ public class ReportService extends Logging implements IReportService {
                 }
         );
 
-        return this.reportGenerator.generateTourReport(requestedTour);
+        return this.reportGenerator.generateTourReport(requestedTour, sessionId);
     }
 
     @Override

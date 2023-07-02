@@ -26,23 +26,23 @@ public class Tour implements Serializable {
     @Column(name = "name", nullable = false, unique = true, length = 50)
     @NotNull(message = "Tour name cannot be null")
     @NotBlank(message = "Tour name cannot be empty")
-    @Size(min = 5, max = 50, message = "A valid name must contain more than 5 characters and less than 50")
+    @Size(min = 1, max = 50, message = "A valid name must contain more than 0 characters and less than 50")
     private String name;
 
     @Column(name = "description", nullable = true, length = 500)
-    @Size(min = 10, max = 500, message = "A valid description must contain more than 10 characters and less than 500")
+    @Size(min = 1, max = 500, message = "A valid description must contain more than 0 characters and less than 500")
     private String description;
 
     @Column(name = "from_location", nullable = false, length = 50)
     @NotNull(message = "Start cannot be null")
     @NotBlank(message = "Start cannot be empty")
-    @Size(min = 1, max = 50, message = "A valid name must contain more than 5 characters and less than 50")
+    @Size(min = 1, max = 50, message = "A valid name must contain more than 0 characters and less than 50")
     private String from;
 
     @Column(name = "to_location", nullable = false, length = 50)
     @NotNull(message = "To cannot be null")
     @NotBlank(message = "To cannot be empty")
-    @Size(min = 1, max = 50, message = "A valid name must contain more than 5 characters and less than 50")
+    @Size(min = 1, max = 50, message = "A valid name must contain more than 0 characters and less than 50")
     private String to;
 
     @Column(name = "vehicle", nullable = false)
@@ -52,18 +52,18 @@ public class Tour implements Serializable {
 
     @Column(name = "estimated_time_minutes", nullable = false)
     @NotNull(message = "Estimated time cannot be null")
-    @Min(value = 1, message = "Estimated time in minutes has to be at least 1")
+    @Min(value = 0, message = "Estimated time must be positive and non-zero")
     private Long estimatedTimeSeconds;
 
     @Column(name = "distance_km", nullable = false)
     @NotNull(message = "Distance cannot be null")
-    @Min(value = 0, message = "Tour distance in meters has to be at least 1")
+    @Min(value = 0, message = "Tour distance must be positive and non-zero")
     private Double tourDistanceKilometers;
 
-    @Column(name = "route_information", nullable = false, length = 255)
+    @Column(name = "route_information", nullable = false, length = 1000)
     @NotNull(message = "The route information cannot be null")
     @NotBlank(message = "The route information cannot be empty")
-    @Size(min = 1, max = 255, message = "A valid route information must contain more than 1 character and less than 255")
+    @Size(min = 1, max = 1000, message = "A valid route information must contain more than 0 character and less than 1000")
     private String routeInformation;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "tour")
