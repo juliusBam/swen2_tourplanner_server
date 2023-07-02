@@ -1,5 +1,6 @@
 package at.technikum.swen2_tourplanner_server.restServer.services.interfaces;
 
+import at.technikum.swen2_tourplanner_server.BL.model.ReportInputData;
 import at.technikum.swen2_tourplanner_server.BL.model.TourStatsModel;
 import at.technikum.swen2_tourplanner_server.dto.TourDto;
 import at.technikum.swen2_tourplanner_server.dto.responses.TourResponseDto;
@@ -27,6 +28,8 @@ public interface ITourService {
     public TourResponseDto createTour(TourDto tourDto);
 
     List<Tour> getAllEntityModel();
+
+    List<ReportInputData> getAllSummarizeReport();
 
     public TourStatsModel calculateTourStats(Tour tour);
 

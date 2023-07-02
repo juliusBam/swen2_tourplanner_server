@@ -3,13 +3,13 @@ package at.technikum.swen2_tourplanner_server.restServer.services;
 import at.technikum.swen2_tourplanner_server.BL.StatsCalculator;
 import at.technikum.swen2_tourplanner_server.BL.TourModelConverter;
 import at.technikum.swen2_tourplanner_server.BL.model.AverageStatsModel;
+import at.technikum.swen2_tourplanner_server.BL.model.ReportInputData;
 import at.technikum.swen2_tourplanner_server.BL.model.TourStatsModel;
 import at.technikum.swen2_tourplanner_server.Logging;
 import at.technikum.swen2_tourplanner_server.dto.TourDto;
 import at.technikum.swen2_tourplanner_server.dto.TourStatsDto;
 import at.technikum.swen2_tourplanner_server.dto.responses.TourResponseDto;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
-import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordCreationErrorExc;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.RecordNotFoundExc;
 import at.technikum.swen2_tourplanner_server.BL.validators.IValidator;
@@ -20,7 +20,6 @@ import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.ITou
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -219,6 +218,32 @@ public class TourService extends Logging implements ITourService {
     @Override
     public List<Tour> getAllEntityModel() {
         return this.tourRepository.findAll();
+    }
+
+    @Override
+    public List<ReportInputData> getAllSummarizeReport() {
+        List<Tour> tours = this.tourRepository.findAll();
+
+        List<ReportInputData> toursReportInputData = new ArrayList<>();
+
+        //todo calculate stats
+        for (Tour tour : tours) {
+
+            TourStatsModel tourStatsModel = this.calculateTourStats(tour);
+
+            toursReportInputData.add(
+                    new ReportInputData(
+                            tour, new TourStatsModel(tourStatsModel.popularity(),
+                            tourStatsModel.childFriendliness(),
+                            tourStatsModel.avgTime(),
+                            tourStatsModel.avgRating(),
+                            tourStatsModel.avgDifficulty())
+                    )
+            );
+
+        }
+
+        return toursReportInputData;
     }
 
     /*@Override

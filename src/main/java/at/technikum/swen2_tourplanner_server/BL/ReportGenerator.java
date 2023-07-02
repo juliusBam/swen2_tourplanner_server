@@ -1,8 +1,9 @@
 package at.technikum.swen2_tourplanner_server.BL;
 
+import at.technikum.swen2_tourplanner_server.BL.model.ReportInputData;
+import at.technikum.swen2_tourplanner_server.BL.model.TourStatsModel;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
-import at.technikum.swen2_tourplanner_server.entities.enums.Rating;
 import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.ReportGenerationException;
 import com.itextpdf.io.image.ImageData;
@@ -13,7 +14,6 @@ import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
 import com.itextpdf.layout.Document;
-import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.borders.SolidBorder;
 import com.itextpdf.layout.element.*;
 import com.itextpdf.layout.element.Image;
@@ -23,8 +23,6 @@ import com.itextpdf.layout.properties.ListNumberingType;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -44,7 +42,7 @@ public class ReportGenerator {
 
     private final String baseUrl = "https://www.mapquestapi.com/staticmap/v5/map";
 
-    public ReportGeneratorOutput generateTourReport(Tour tour, String sessionId) {
+    public ReportGeneratorOutput generateTourReport(ReportInputData tourInputData, String sessionId) {
 
         //we operate with byte arrays, so that we can avoid having to store the file and delete it afterwards
 
@@ -62,20 +60,24 @@ public class ReportGenerator {
                 p.add(" generated on " + nowFormatted + ".");
                 doc.add(p);
 
-                doc.add(this.createTourBasicInfo(tour, sessionId));
+                doc.add(this.createTourBasicInfo(tourInputData.tour(), sessionId));
 
-                if (tour.getLogs().size() != 0) {
+                if (tourInputData.tour().getLogs().size() != 0) {
+
+                    doc.add(new Paragraph("Tour average statistics:").setFontSize(this.headerFontSize));
+
+                    doc.add(this.createTourAverageStatsTable(tourInputData.tourStatsModel()));
 
                     doc.add(new Paragraph("Tour logs").setFontSize(this.headerFontSize));
 
-                    doc.add(this.createTourLogsEntries(tour));
+                    doc.add(this.createTourLogsEntries(tourInputData.tour()));
 
                 }
 
             }
 
             //return has to happen afterwards we closed the doc and pdfwriter, but before the stream is closed
-            return new ReportGeneratorOutput(tour.getName().toLowerCase().replace(" ", "_"), byteArrayOutputStream.toByteArray());
+            return new ReportGeneratorOutput(tourInputData.tour().getName().toLowerCase().replace(" ", "_"), byteArrayOutputStream.toByteArray());
 
         } catch (IOException e) {
             throw new ReportGenerationException(e.getMessage());
@@ -102,7 +104,7 @@ public class ReportGenerator {
         doc.add(ls);
     }
 
-    public ReportGeneratorOutput generateSummarizeReport(java.util.List<Tour> allTours) {
+    public ReportGeneratorOutput generateSummarizeReport(java.util.List<ReportInputData> allTours) {
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();) {
 
@@ -120,28 +122,24 @@ public class ReportGenerator {
 
                 List tourListForReport = new List();
 
-                for (Tour tour : allTours) {
+                for (ReportInputData inputDataEntry : allTours) {
                     ListItem tourEntry = new ListItem();
 
-                    tourEntry.add(this.createTourBasicInfo(tour, "").setMarginTop(15));
+                    SolidLine line = new SolidLine(1f);
+                    line.setColor(ColorConstants.BLACK);
+                    LineSeparator ls = new LineSeparator(line);
+                    ls.setWidth(UnitValue.createPercentValue(100));
+                    ls.setMarginTop(10);
+                    ls.setMarginBottom(5);
 
-                    if (!tour.getLogs().isEmpty()) {
-                        tourEntry.add(new Paragraph("Summary from tour logs").setFontSize(26));
+                    doc.add(ls);
 
-                        Table averageStatsTable = new Table(2);
+                    tourEntry.add(this.createTourBasicInfo(inputDataEntry.tour(), "").setMarginTop(15));
 
-                        //TODO use the calculate stats method of tour service
-                        averageStatsTable.addCell(this.createCell("Popularity:"));
-                        //averageStatsTable.addCell(this.createCell(tour.getPopularity().toString(), true));
+                    if (!inputDataEntry.tour().getLogs().isEmpty()) {
+                        tourEntry.add(new Paragraph("Summary from tour logs:"));
 
-                        averageStatsTable.addCell(this.createCell("Average time (minutes):"));
-                        //averageStatsTable.addCell(this.createCell(tour.getAvgTime().toString(), true));
-
-                        averageStatsTable.addCell(this.createCell("Average difficulty:"));
-                        //averageStatsTable.addCell(this.createCell(tour.getAvgDifficulty().toString(), true));
-
-                        averageStatsTable.addCell(this.createCell("Average rating:"));
-                        //averageStatsTable.addCell(this.createCell(tour.getAvgRating().toString(), true));
+                        Table averageStatsTable = this.createTourAverageStatsTable(inputDataEntry.tourStatsModel());
 
                         tourEntry.add(averageStatsTable);
                     }
@@ -180,7 +178,6 @@ public class ReportGenerator {
 
         //add stats table
         tourContainer.add(this.createTourStatsTable(tour));
-
 
         //fetch the image from the req url for the tour info
         if (!imageSessionId.isEmpty()) {
@@ -289,7 +286,39 @@ public class ReportGenerator {
         }
 
         return tourLogsListForReport;
-        //doc.add(tourLogsListForReport);
+    }
+
+    private Table createTourAverageStatsTable(TourStatsModel tourStatsModel) {
+
+        Table averageStatsTable = new Table(2);
+
+        //TODO use the calculate stats method of tour service
+        averageStatsTable.addCell(this.createCell("Popularity:"));
+        averageStatsTable.addCell(this.createCell(
+                String.format("%d", tourStatsModel.popularity())
+        ));
+
+        averageStatsTable.addCell(this.createCell("Average time (minutes):"));
+        averageStatsTable.addCell(this.createCell(
+                String.format("%,.2f", tourStatsModel.avgTime())
+        ));
+
+        averageStatsTable.addCell(this.createCell("Average difficulty:"));
+        averageStatsTable.addCell(this.createCell(
+                String.format("%,.2f", tourStatsModel.avgDifficulty())
+        ));
+
+        averageStatsTable.addCell(this.createCell("Average rating:"));
+        averageStatsTable.addCell(this.createCell(
+                String.format("%,.2f", tourStatsModel.avgRating())
+        ));
+
+        averageStatsTable.addCell(this.createCell("Child friendliness:"));
+        averageStatsTable.addCell(this.createCell(
+                String.format("%,.2f", tourStatsModel.childFriendliness())
+        ));
+
+        return averageStatsTable;
     }
 
 }
