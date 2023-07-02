@@ -4,10 +4,7 @@ import at.technikum.swen2_tourplanner_server.entities.enums.Difficulty;
 import at.technikum.swen2_tourplanner_server.entities.enums.Rating;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.io.Serializable;
 
@@ -33,8 +30,10 @@ public class TourLog implements Serializable {
     private String comment;
 
     @Column(name = "tour_log_difficulty", nullable = false)
+    @Min(0)
+    @Max(10)
     @NotNull(message = "Tour log difficulty cannot be null")
-    private Difficulty difficulty;
+    private Integer difficulty;
 
     @Column(name = "tour_log_total_time_minutes", nullable = false)
     @NotNull(message = "Tour log total time cannot be null")
@@ -42,8 +41,10 @@ public class TourLog implements Serializable {
     private Long totalTimeMinutes;
 
     @Column(name = "tour_log_rating", nullable = false)
+    @Min(0)
+    @Max(10)
     @NotNull(message = "Tour log rating cannot be null")
-    private Rating rating;
+    private Integer rating;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "tour_id")
@@ -51,7 +52,7 @@ public class TourLog implements Serializable {
 
     public TourLog() {}
 
-    public TourLog(Long timeStamp, String comment, Difficulty difficulty, Long totalTimeMinutes, Rating rating, Tour tour) {
+    public TourLog(Long timeStamp, String comment, Integer difficulty, Long totalTimeMinutes, Integer rating, Tour tour) {
         this.timeStamp = timeStamp;
         this.comment = comment;
         this.difficulty = difficulty;
@@ -77,7 +78,7 @@ public class TourLog implements Serializable {
         this.comment = comment;
     }
 
-    public Difficulty getDifficulty() {
+    public Integer getDifficulty() {
         return difficulty;
     }
     //endregion
@@ -86,7 +87,7 @@ public class TourLog implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    public void setDifficulty(Difficulty difficulty) {
+    public void setDifficulty(Integer difficulty) {
         this.difficulty = difficulty;
     }
 
@@ -98,11 +99,11 @@ public class TourLog implements Serializable {
         this.totalTimeMinutes = totalTimeMinutes;
     }
 
-    public Rating getRating() {
+    public Integer getRating() {
         return rating;
     }
 
-    public void setRating(Rating rating) {
+    public void setRating(Integer rating) {
         this.rating = rating;
     }
 

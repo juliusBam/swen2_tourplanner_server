@@ -238,25 +238,6 @@ public class ReportGenerator {
 
     }
 
-    private String convertRating(Rating rating) {
-
-        switch (rating) {
-            case BAD -> {
-                return "negative";
-            }
-            case DECENT -> {
-                return "neutral";
-            }
-            case GOOD -> {
-                return "good";
-            }
-            default -> {
-                return "unknown rating";
-            }
-        }
-
-    }
-
     private String createTourInformation(String sessionId, Vehicle type) {
         String colorParam;
         switch (type) {
@@ -296,7 +277,7 @@ public class ReportGenerator {
             tourLogDetailsTable.addCell(this.createCell(log.getDifficulty().toString().toLowerCase()));
 
             tourLogDetailsTable.addCell(this.createCell("Rating:"));
-            tourLogDetailsTable.addCell(this.createCell(this.convertRating(log.getRating())));
+            tourLogDetailsTable.addCell(this.createCell(log.getRating().toString()));
 
             tourLogDetailsTable.addCell(this.createCell("Needed time (minutes):"));
             tourLogDetailsTable.addCell(this.createCell(log.getTotalTimeMinutes().toString()));

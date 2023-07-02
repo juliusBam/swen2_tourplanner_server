@@ -19,15 +19,15 @@ public class TourLogDto {
     	private Long timeStamp;
         private String comment;
 
-        private Difficulty difficulty;
+        private Integer difficulty;
 
         private Long totalTimeMinutes;
 
-        private Rating rating;
+        private Integer rating;
 
         private Long tourId;
 
-    public TourLogDto(Long timeStamp, String comment, Difficulty difficulty, Long totalTimeMinutes, Rating rating, Long tourId) {
+    public TourLogDto(Long timeStamp, String comment, Integer difficulty, Long totalTimeMinutes, Integer rating, Long tourId) {
         this.timeStamp = timeStamp;
         this.comment = comment;
         this.difficulty = difficulty;
@@ -36,7 +36,7 @@ public class TourLogDto {
         this.tourId = tourId;
     }
 
-    public TourLogDto(Long tourLogId, Long timeStamp, String comment, Difficulty difficulty, Long totalTimeMinutes, Rating rating, Long tourId) {
+    public TourLogDto(Long tourLogId, Long timeStamp, String comment, Integer difficulty, Long totalTimeMinutes, Integer rating, Long tourId) {
         this.id = tourLogId;
         this.timeStamp = timeStamp;
         this.comment = comment;
@@ -55,7 +55,7 @@ public class TourLogDto {
         return comment;
     }
 
-    public Difficulty getDifficulty() {
+    public Integer getDifficulty() {
         return difficulty;
     }
 
@@ -63,7 +63,7 @@ public class TourLogDto {
         return totalTimeMinutes;
     }
 
-    public Rating getRating() {
+    public Integer getRating() {
         return rating;
     }
 
