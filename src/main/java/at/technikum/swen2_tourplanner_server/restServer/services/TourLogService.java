@@ -13,7 +13,6 @@ import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepo
 import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.ITourLogService;
 import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.ITourService;
 import jakarta.transaction.Transactional;
-import org.aspectj.apache.bcel.classfile.annotation.RuntimeInvisAnnos;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,7 +44,7 @@ public class TourLogService extends Logging implements ITourLogService {
 
         Tour linkedTour = this.tourService.getByIdEntityModel(linkedTourId).orElseThrow(
                 () -> {
-                    Logging.logger.error("Error creating tour log for tour with id [{}], the tour log could not be found in the database", linkedTourId);
+                    Logging.logger.error(String.format("Error creating tour log for tour with id [{%s}], the tour log could not be found in the database", linkedTourId));
                     return new RecordNotFoundExc("Could not find the associated tour with id: " + linkedTourId);
                 }
         );
@@ -60,16 +59,7 @@ public class TourLogService extends Logging implements ITourLogService {
 
         TourLog createdLog = this.tourLogRepository.saveAndFlush(newTourLog);
 
-        TourStatsModel tourStatsModel = null;
-
-        try {
-
-            tourStatsModel = this.tourService.calculateTourStats(linkedTourId);
-
-        } catch (RuntimeException e) {
-
-        }
-
+        TourStatsModel tourStatsModel = this.tourService.calculateTourStats(linkedTourId);
 
         return new TourLogManipulationResponseDto(
                 TourLogModelConverter.tourLogEntityToDto(createdLog),
@@ -91,12 +81,17 @@ public class TourLogService extends Logging implements ITourLogService {
         //if tour log is not present anymore do not allow an update
         this.tourLogRepository.findById(updatedTourLog.getId()).orElseThrow(
                 () -> {
-                    Logging.logger.error("Error updating the tour log with id [{}], the tour log could not be found in the database", updatedTourLog.getId());
+                    Logging.logger.error(String.format("Error updating the tour log with id [{%d}], the tour log could not be found in the database", updatedTourLog.getId()));
                     return new RecordNotFoundExc("Tour log not found");
                 }
         );
 
-        Tour parentTour = this.tourService.getByIdEntityModel(updatedTourLog.getTourId()).orElseThrow();
+        Tour parentTour = this.tourService.getByIdEntityModel(updatedTourLog.getTourId()).orElseThrow(
+                () -> {
+                    logger.error(String.format(String.format("Error updating the tour log with id [{%d}], the associated tour with id: [{%d}] could not be found", updatedTourLog.getId(), updatedTourLog.getTourId())));
+                    return new RecordNotFoundExc("Tour log not found");
+                }
+        );
 
         TourLog newTourLog = new TourLog(updatedTourLog.getTimeStamp(), updatedTourLog.getComment(),
                 updatedTourLog.getDifficulty(), updatedTourLog.getTotalTimeMinutes(),
@@ -127,7 +122,7 @@ public class TourLogService extends Logging implements ITourLogService {
 
         TourLog tourLogToDelete = this.tourLogRepository.findById(tourLogId).orElseThrow(
                 () -> {
-                    Logging.logger.error("Tour log to delete with id [{}] is not present in the database", tourLogId);
+                    Logging.logger.error(String.format("Tour log to delete with id [{%d}] is not present in the database", tourLogId));
                     return new RecordNotFoundExc("Could not find tour log with id: " + tourLogId);
                 }
         );

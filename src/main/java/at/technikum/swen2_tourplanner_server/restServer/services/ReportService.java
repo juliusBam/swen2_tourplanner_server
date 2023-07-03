@@ -1,7 +1,7 @@
 package at.technikum.swen2_tourplanner_server.restServer.services;
 
 import at.technikum.swen2_tourplanner_server.BL.ReportGenerator;
-import at.technikum.swen2_tourplanner_server.BL.ReportGeneratorOutput;
+import at.technikum.swen2_tourplanner_server.BL.model.ReportGeneratorOutput;
 import at.technikum.swen2_tourplanner_server.BL.model.ReportInputData;
 import at.technikum.swen2_tourplanner_server.BL.model.TourStatsModel;
 import at.technikum.swen2_tourplanner_server.Logging;
@@ -31,7 +31,7 @@ public class ReportService extends Logging implements IReportService {
         Tour requestedTour = this.tourService.getByIdEntityModel(tourId).orElseThrow(
                 () -> {
 
-                    Logging.logger.error("Error generating report for tour with id [{}], tour could not be found in the database", tourId);
+                    Logging.logger.error(String.format("Error generating report for tour with id [{%d}], tour could not be found in the database", tourId));
                     return new ReportGenerationException("Tour cannot be found");
                 }
         );
@@ -47,8 +47,8 @@ public class ReportService extends Logging implements IReportService {
         List<ReportInputData> requestedTours = this.tourService.getAllSummarizeReport();
 
         if (requestedTours.size() == 0) {
-            Logging.logger.error("Error generating summary report, but no reports could be found in the database");
-            throw new ReportGenerationException("There are no reports in the database");
+            Logging.logger.error("Error generating summary report, but no tours could be found in the database");
+            throw new ReportGenerationException("There are no tours in the database");
         }
 
         return this.reportGenerator.generateSummarizeReport(requestedTours);

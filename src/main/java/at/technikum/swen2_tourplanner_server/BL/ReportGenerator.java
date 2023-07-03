@@ -1,7 +1,9 @@
 package at.technikum.swen2_tourplanner_server.BL;
 
+import at.technikum.swen2_tourplanner_server.BL.model.ReportGeneratorOutput;
 import at.technikum.swen2_tourplanner_server.BL.model.ReportInputData;
 import at.technikum.swen2_tourplanner_server.BL.model.TourStatsModel;
+import at.technikum.swen2_tourplanner_server.Logging;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
@@ -32,13 +34,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 
-public class ReportGenerator {
+public class ReportGenerator extends Logging {
 
     private final float headerFontSize = 32f;
 
     private final float PaddingValue = 20;
 
-    private final String apiKey = "Vg5MvjVijd5lRe6xqUXDdJR1SKcuce0h";
+    private final String apiKey = "M7MWWvx9XboM37IZykkaAaEmVKfDgDlX";
 
     private final String baseUrl = "https://www.mapquestapi.com/staticmap/v5/map";
 
@@ -80,6 +82,7 @@ public class ReportGenerator {
             return new ReportGeneratorOutput(tourInputData.tour().getName().toLowerCase().replace(" ", "_"), byteArrayOutputStream.toByteArray());
 
         } catch (IOException e) {
+            logger.error(String.format("Error generating tour report for tour: [{%d}], error: [{%s}]", tourInputData.tour().getId(), e.getMessage()));
             throw new ReportGenerationException(e.getMessage());
         }
 
@@ -154,6 +157,7 @@ public class ReportGenerator {
             return new ReportGeneratorOutput("tourPlanner_summarizedReport", byteArrayOutputStream.toByteArray());
 
         } catch (IOException e) {
+            logger.error(String.format("Error generating summarize report: [{%s}]", e.getMessage()));
             throw new ReportGenerationException(e.getMessage());
         }
     }

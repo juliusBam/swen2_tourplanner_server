@@ -1,10 +1,7 @@
 package at.technikum.swen2_tourplanner_server.restServer.controllers;
 
 import at.technikum.swen2_tourplanner_server.Logging;
-import at.technikum.swen2_tourplanner_server.dto.responses.TourLogFetchResponseDto;
 import at.technikum.swen2_tourplanner_server.dto.responses.TourLogManipulationResponseDto;
-import at.technikum.swen2_tourplanner_server.entities.Tour;
-import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.dto.TourLogDto;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourLogRepository;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;

@@ -1,11 +1,7 @@
 package at.technikum.swen2_tourplanner_server.dto.responses;
 
-import at.technikum.swen2_tourplanner_server.BL.TourLogModelConverter;
 import at.technikum.swen2_tourplanner_server.dto.TourLogDto;
 import at.technikum.swen2_tourplanner_server.dto.TourStatsDto;
-import at.technikum.swen2_tourplanner_server.entities.TourLog;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -3,8 +3,6 @@ package at.technikum.swen2_tourplanner_server.dto.responses;
 import at.technikum.swen2_tourplanner_server.dto.TourDto;
 import at.technikum.swen2_tourplanner_server.dto.TourStatsDto;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -1,7 +1,5 @@
 package at.technikum.swen2_tourplanner_server.entities;
 
-import at.technikum.swen2_tourplanner_server.entities.enums.Difficulty;
-import at.technikum.swen2_tourplanner_server.entities.enums.Rating;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;

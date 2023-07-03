@@ -44,8 +44,8 @@ public class TourService extends Logging implements ITourService {
 
         Tour existingTour = this.tourRepository.findById(tourDto.getId()).orElseThrow(
                 () -> {
-                    Logging.logger.error("Tour to update with id [{}] and name [{}] is not present in the database"
-                                            , tourDto.getId(), tourDto.getName());
+                    Logging.logger.error(String.format("Tour to update with id [{%d}] and name [{%s}] is not present in the database"
+                                            , tourDto.getId(), tourDto.getName()));
                     return new RecordNotFoundExc("Could not find tour with name: " + tourDto.getName());
                 }
         );
@@ -92,7 +92,7 @@ public class TourService extends Logging implements ITourService {
 
         } else {
 
-            Logging.logger.error("Tour to delete with id [{}] is not present in the database", id);
+            Logging.logger.error(String.format("Tour to delete with id [{%d}] is not present in the database", id));
             throw new RecordNotFoundExc("Could not find tour with id: " + id);
 
         }
@@ -145,7 +145,7 @@ public class TourService extends Logging implements ITourService {
 
         Tour tour = this.tourRepository.findById(id).orElseThrow(
                 () -> {
-                    Logging.logger.error("Tour to fetch with id [{}] is not present in the database", id);
+                    Logging.logger.error(String.format("Tour to fetch with id [{%d}] is not present in the database", id));
                     throw new RecordNotFoundExc("Could not find tour with id: " + id);
                 }
         );
@@ -174,7 +174,7 @@ public class TourService extends Logging implements ITourService {
     public TourResponseDto createTour(TourDto tourDto) {
 
         if (tourDto.getId() != null) {
-            Logging.logger.error("Tour id is set on creation id [{}] and name [{}]", tourDto.getId(), tourDto.getName());
+            Logging.logger.error(String.format("Tour id is set on creation id [{%d}] and name [{%s}]", tourDto.getId(), tourDto.getName()));
             throw new RecordCreationErrorExc("Tour id cannot be set on creation");
         }
 
@@ -196,7 +196,7 @@ public class TourService extends Logging implements ITourService {
         
         Tour addedTour = this.tourRepository.findById(addedId).orElseThrow(
                 () -> {
-                    Logging.logger.error("The created tour with id [{}] and name [{}] could not be found in the database", addedId, tourDto.getName());
+                    Logging.logger.error(String.format("The created tour with id [{%d}] and name [{%s}] could not be found in the database", addedId, tourDto.getName()));
                     return new RecordCreationErrorExc("The tour could not be created");
                 }
         );
@@ -226,7 +226,6 @@ public class TourService extends Logging implements ITourService {
 
         List<ReportInputData> toursReportInputData = new ArrayList<>();
 
-        //todo calculate stats
         for (Tour tour : tours) {
 
             TourStatsModel tourStatsModel = this.calculateTourStats(tour);
@@ -246,50 +245,11 @@ public class TourService extends Logging implements ITourService {
         return toursReportInputData;
     }
 
-    /*@Override
-    @Transactional
-    public Tour updateCalculatedValues(Long tourToUpdateId, List<TourLog> linkedLogs) {
-
-        Tour tourToUpdate = this.tourRepository.findById(tourToUpdateId).orElseThrow(
-                () -> {
-                    Logging.logger.error("Error updating the calculated values of tour with id [{}], could not find the tour", tourToUpdateId);
-                    return new RecordNotFoundExc("Could not find tour with id: " + tourToUpdateId);
-                }
-        );
-
-        int numberOfReviews = linkedLogs.size();
-
-        Double childF = 0.0;
-
-        for (TourLog tourlog : linkedLogs) {
-            Double sum = (double) (tourlog.getDifficulty().ordinal() + tourlog.getRating().ordinal());
-
-            if (tourlog.getTotalTimeMinutes() > 90) {
-                sum = sum / 2;
-            }
-
-            childF += sum;
-        }
-
-        if (tourToUpdate.getTourDistanceKilometers() > 150) {
-            childF *= 0.7;
-        }
-
-        childF /= numberOfReviews;
-
-        tourToUpdate.setPopularity(numberOfReviews);
-        tourToUpdate.setChildFriendliness(childF);
-
-        this.tourRepository.save(tourToUpdate);
-
-        return tourToUpdate;
-    }*/
-
     public TourStatsModel calculateTourStats(Long tourId) {
 
         Tour tour = this.tourRepository.findById(tourId).orElseThrow(
                 () -> {
-                    logger.error(String.format("Could not find tour with id: [{0}] while calculating stats", tourId));
+                    logger.error(String.format("Could not find tour with id: [{%d}] while calculating stats", tourId));
                     throw new TourStatsException("Could not find tour with id: [" + tourId + "]");
                 }
         );
@@ -338,7 +298,7 @@ public class TourService extends Logging implements ITourService {
         Optional<Tour> foundTour = sortedTours.stream().filter(tourInList -> tourInList.getId().equals(tour.getId())).findFirst();
 
         if (foundTour.isEmpty()) {
-            logger.error(String.format("No tour found to calculate the popularity for, tour id [{0}]", tour.getId()));
+            logger.error(String.format("No tour found to calculate the popularity for, tour id [{%d}]", tour.getId()));
             throw new TourStatsException("No tour found to calculate the popularity for");
         }
 

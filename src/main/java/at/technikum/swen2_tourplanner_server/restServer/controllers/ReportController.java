@@ -1,10 +1,9 @@
 package at.technikum.swen2_tourplanner_server.restServer.controllers;
 
-import at.technikum.swen2_tourplanner_server.BL.ReportGeneratorOutput;
+import at.technikum.swen2_tourplanner_server.BL.model.ReportGeneratorOutput;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
 import at.technikum.swen2_tourplanner_server.restServer.services.ReportService;
 import at.technikum.swen2_tourplanner_server.restServer.services.interfaces.IReportService;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
