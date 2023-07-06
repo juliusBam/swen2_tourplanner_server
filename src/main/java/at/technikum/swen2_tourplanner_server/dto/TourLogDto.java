@@ -1,13 +1,7 @@
 package at.technikum.swen2_tourplanner_server.dto;
 
-import at.technikum.swen2_tourplanner_server.entities.enums.Difficulty;
-import at.technikum.swen2_tourplanner_server.entities.enums.Rating;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-//todo add param for force update --> see version
 
 @Getter
 @Setter

@@ -4,8 +4,6 @@ import at.technikum.swen2_tourplanner_server.dto.TourDto;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 
 public class TourModelConverter {
-
-    //todo use to convert responses
     public static TourDto tourEntitytoDto(Tour tour) {
 
         return new TourDto(

@@ -11,8 +11,6 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 
-//todo add a version number to check the updates
-
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Entity(name = "tours")
 public class Tour implements Serializable {

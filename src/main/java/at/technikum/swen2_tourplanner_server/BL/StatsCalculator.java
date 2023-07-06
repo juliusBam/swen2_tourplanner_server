@@ -21,7 +21,6 @@ public class StatsCalculator {
                 avgRating += tourLog.getRating();
             }
 
-            //todo decide how to calculate the child friendliness
             avgTime = avgTime/tour.getLogs().size();
             avgRating = avgRating/tour.getLogs().size();
             avgDifficulty = avgDifficulty/tour.getLogs().size();

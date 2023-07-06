@@ -6,7 +6,6 @@ import jakarta.validation.constraints.*;
 
 import java.io.Serializable;
 
-//todo add a version number to check the updates
 
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Entity(name = "tour_log")

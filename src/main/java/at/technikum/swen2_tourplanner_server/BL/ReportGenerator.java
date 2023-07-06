@@ -26,10 +26,6 @@ import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.ListNumberingType;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
-import org.hibernate.validator.constraints.CodePointLength;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -55,7 +51,6 @@ public class ReportGenerator extends Logging {
         this.apiKey = mapQuestSource.getApiKey();
         this.baseUrl = mapQuestSource.getApiUrl();
     }
-    //= "https://www.mapquestapi.com/staticmap/v5/map";
 
 
     public ReportGeneratorOutput generateTourReport(ReportInputData tourInputData, String sessionId) {
