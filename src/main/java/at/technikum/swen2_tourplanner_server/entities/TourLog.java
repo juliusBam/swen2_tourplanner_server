@@ -24,6 +24,7 @@ public class TourLog implements Serializable {
     @NotNull(message = "Tour log comment cannot be null")
     @NotBlank(message = "Tour log comment cannot be empty")
     @Size(min = 5, max = 500, message = "A valid tour log comment must contain more than 5 characters and less than 500")
+    @Pattern(regexp = "^[^@]*$", message = "The comment cannot contain the symbol '@'")
     private String comment;
 
     @Column(name = "tour_log_difficulty", nullable = false)

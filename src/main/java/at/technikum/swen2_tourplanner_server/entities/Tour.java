@@ -3,10 +3,7 @@ package at.technikum.swen2_tourplanner_server.entities;
 import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -25,10 +22,12 @@ public class Tour implements Serializable {
     @NotNull(message = "Tour name cannot be null")
     @NotBlank(message = "Tour name cannot be empty")
     @Size(min = 1, max = 50, message = "A valid name must contain more than 0 characters and less than 50")
+    @Pattern(regexp = "^[^@]*$", message = "The name cannot contain the symbol '@'")
     private String name;
 
     @Column(name = "description", nullable = true, length = 500)
     @Size(min = 1, max = 500, message = "A valid description must contain more than 0 characters and less than 500")
+    @Pattern(regexp = "^[^@]*$", message = "The description cannot contain the symbol '@'")
     private String description;
 
     @Column(name = "from_location", nullable = false, length = 50)
