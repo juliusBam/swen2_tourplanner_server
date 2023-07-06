@@ -5,6 +5,7 @@ import at.technikum.swen2_tourplanner_server.BL.model.ReportGeneratorOutput;
 import at.technikum.swen2_tourplanner_server.BL.model.ReportInputData;
 import at.technikum.swen2_tourplanner_server.BL.model.TourStatsModel;
 import at.technikum.swen2_tourplanner_server.Logging;
+import at.technikum.swen2_tourplanner_server.MapQuestSource;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.restServer.exceptions.ReportGenerationException;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
@@ -20,9 +21,9 @@ public class ReportService extends Logging implements IReportService {
 
     private final ReportGenerator reportGenerator;
 
-    public ReportService(TourRepository tourRepository) {
+    public ReportService(TourRepository tourRepository, MapQuestSource mapQuestSource) {
         this.tourService = new TourService(tourRepository);
-        this.reportGenerator = new ReportGenerator();
+        this.reportGenerator = new ReportGenerator(mapQuestSource);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class ReportService extends Logging implements IReportService {
         List<ReportInputData> requestedTours = this.tourService.getAllSummarizeReport();
 
         if (requestedTours.size() == 0) {
-            Logging.logger.error("Error generating summary report, but no tours could be found in the database");
+            Logging.logger.info("Generating summary report, but no tours could be found in the database");
             throw new ReportGenerationException("There are no tours in the database");
         }
 

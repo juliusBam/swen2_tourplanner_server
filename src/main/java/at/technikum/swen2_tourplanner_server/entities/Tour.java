@@ -36,13 +36,13 @@ public class Tour implements Serializable {
     @Column(name = "from_location", nullable = false, length = 50)
     @NotNull(message = "Start cannot be null")
     @NotBlank(message = "Start cannot be empty")
-    @Size(min = 1, max = 50, message = "A valid name must contain more than 0 characters and less than 50")
+    @Size(min = 1, max = 50, message = "A valid start must contain more than 0 characters and less than 50")
     private String from;
 
     @Column(name = "to_location", nullable = false, length = 50)
     @NotNull(message = "To cannot be null")
     @NotBlank(message = "To cannot be empty")
-    @Size(min = 1, max = 50, message = "A valid name must contain more than 0 characters and less than 50")
+    @Size(min = 1, max = 50, message = "A valid destination must contain more than 0 characters and less than 50")
     private String to;
 
     @Column(name = "vehicle", nullable = false)

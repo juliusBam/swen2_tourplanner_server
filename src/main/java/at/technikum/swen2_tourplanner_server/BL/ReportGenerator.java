@@ -1,9 +1,11 @@
 package at.technikum.swen2_tourplanner_server.BL;
 
+import at.technikum.swen2_tourplanner_server.AppPropertySource;
 import at.technikum.swen2_tourplanner_server.BL.model.ReportGeneratorOutput;
 import at.technikum.swen2_tourplanner_server.BL.model.ReportInputData;
 import at.technikum.swen2_tourplanner_server.BL.model.TourStatsModel;
 import at.technikum.swen2_tourplanner_server.Logging;
+import at.technikum.swen2_tourplanner_server.MapQuestSource;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.TourLog;
 import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
@@ -24,6 +26,10 @@ import com.itextpdf.layout.properties.HorizontalAlignment;
 import com.itextpdf.layout.properties.ListNumberingType;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
+import org.hibernate.validator.constraints.CodePointLength;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,12 +46,21 @@ public class ReportGenerator extends Logging {
 
     private final float PaddingValue = 20;
 
-    private final String apiKey = "M7MWWvx9XboM37IZykkaAaEmVKfDgDlX";
+    private final String apiKey;
 
-    private final String baseUrl = "https://www.mapquestapi.com/staticmap/v5/map";
+    private final String baseUrl;
+
+    public ReportGenerator(MapQuestSource mapQuestSource) {
+        super();
+        this.apiKey = mapQuestSource.getApiKey();
+        this.baseUrl = mapQuestSource.getApiUrl();
+    }
+    //= "https://www.mapquestapi.com/staticmap/v5/map";
+
 
     public ReportGeneratorOutput generateTourReport(ReportInputData tourInputData, String sessionId) {
 
+        var source = AppPropertySource.getMapQuestKey();
         //we operate with byte arrays, so that we can avoid having to store the file and delete it afterwards
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();) {
