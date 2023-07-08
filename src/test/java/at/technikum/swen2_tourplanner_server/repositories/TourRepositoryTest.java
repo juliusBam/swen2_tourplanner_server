@@ -3,21 +3,18 @@ package at.technikum.swen2_tourplanner_server.repositories;
 import at.technikum.swen2_tourplanner_server.entities.Tour;
 import at.technikum.swen2_tourplanner_server.entities.enums.Vehicle;
 import at.technikum.swen2_tourplanner_server.restServer.repositories.TourRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import at.technikum.swen2_tourplanner_server.restServer.services.TourService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -26,9 +23,27 @@ public class TourRepositoryTest {
     @Autowired
     private TourRepository tourRepository;
 
+    private TourService tourService;
+
     private Tour tour1;
 
     private Tour tour2;
+
+    public TourRepositoryTest() {
+        this.tourService = new TourService(this.tourRepository);
+    }
+
+    private Tour invalidTourName = new Tour(
+            "tour name @",
+            "description",
+            Vehicle.BIKE,
+            "from",
+            "to",
+            30L,
+            10.2D,
+            "route info",
+            null
+    );
 
     @BeforeEach
     void setUp() {
@@ -105,6 +120,27 @@ public class TourRepositoryTest {
         assertTrue(storedTour.isPresent());
         assertEquals(newTourName, storedTour.get().getName());
 
+    }
+
+    @Test
+    void create() {
+
+        Tour newTour = new Tour("first tour", "first tour description", Vehicle.BIKE,
+                "venedig",
+                "paris",
+                12L,
+                8.89,
+                "dasd",
+                null
+        );
+
+        Long newTourId = this.tourRepository.save(newTour).getId();
+
+        Optional<Tour> storedTour = this.tourRepository.findById(newTourId);
+
+        assertTrue(storedTour.isPresent());
+        assertEquals(storedTour.get().getName(), newTour.getName());
+        assertEquals(storedTour.get().getDescription(), newTour.getDescription());
     }
 
 }

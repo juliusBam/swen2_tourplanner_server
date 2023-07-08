@@ -47,6 +47,17 @@ public class TourDto {
         this.routeInformation = routeInformation;
         this.tourLogs = tourLogs;
     }
+
+    public TourDto(String name, String tourDescription, Vehicle vehicle, String startLocation, String endLocation, Long estimatedTimeSeconds, Double tourDistanceKilometers, String routeInfo) {
+        this.name = name;
+        this.description = tourDescription;
+        this.vehicle = vehicle;
+        this.start = startLocation;
+        this.end = endLocation;
+        this.estimatedTimeSeconds = estimatedTimeSeconds;
+        this.tourDistanceKilometers = tourDistanceKilometers;
+        this.routeInformation = routeInfo;
+    }
     //endregion
 
     //region getters and setters

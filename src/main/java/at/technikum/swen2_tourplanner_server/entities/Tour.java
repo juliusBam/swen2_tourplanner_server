@@ -147,6 +147,14 @@ public class Tour implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
+
+    public void setTourDistanceKilometers(Double tourDistanceKilometers) {
+        this.tourDistanceKilometers = tourDistanceKilometers;
+    }
     //endregion
 
 }

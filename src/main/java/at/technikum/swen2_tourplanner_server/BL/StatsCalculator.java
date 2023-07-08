@@ -80,7 +80,7 @@ public class StatsCalculator {
                 return 1.2D;
 
             if (distance > 360)
-                return 0.1D;
+                return 0.2D;
 
             if (distance > 260)
                 return 0.5D;
@@ -99,7 +99,7 @@ public class StatsCalculator {
                 return 1.2D;
 
             if (distance > 50)
-                return 0.1D;
+                return 0.2D;
 
             if (distance > 40)
                 return 0.5D;
