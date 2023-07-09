@@ -55,7 +55,6 @@ public class ReportGenerator extends Logging {
 
     public ReportGeneratorOutput generateTourReport(ReportInputData tourInputData, String sessionId) {
 
-        var source = AppPropertySource.getMapQuestKey();
         //we operate with byte arrays, so that we can avoid having to store the file and delete it afterwards
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();) {
@@ -306,7 +305,6 @@ public class ReportGenerator extends Logging {
 
         Table averageStatsTable = new Table(2);
 
-        //TODO use the calculate stats method of tour service
         averageStatsTable.addCell(this.createCell("Popularity:"));
         averageStatsTable.addCell(this.createCell(
                 String.format("%d", tourStatsModel.popularity())

@@ -101,7 +101,6 @@ public class TourService extends Logging implements ITourService {
 
     @Override
     public void importTour(Tour newTour) {
-        //TODO parse the json into a new tour
         this.tourRepository.save(newTour);
     }
 
@@ -117,7 +116,6 @@ public class TourService extends Logging implements ITourService {
 
         List<TourResponseDto> tourResponses = new ArrayList<>();
 
-        //todo calculate stats
         for (Tour tour : tours) {
 
             TourStatsModel tourStatsModel = this.calculateTourStats(tour);
@@ -250,7 +248,7 @@ public class TourService extends Logging implements ITourService {
         Tour tour = this.tourRepository.findById(tourId).orElseThrow(
                 () -> {
                     logger.error(String.format("Could not find tour with id: [{%d}] while calculating stats", tourId));
-                    throw new TourStatsException("Could not find tour with id: [" + tourId + "]");
+                    return new TourStatsException("Could not find tour with id: [" + tourId + "]");
                 }
         );
 

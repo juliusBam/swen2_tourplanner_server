@@ -19,7 +19,6 @@ public class TourValidator implements IValidator<TourDto> {
 
     }
 
-    //todo add a method to check if the "version" is valid
     @Override
     public void validateUpdate(TourDto tourDto) throws RuntimeException {
 

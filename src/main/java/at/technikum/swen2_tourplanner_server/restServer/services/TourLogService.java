@@ -49,8 +49,6 @@ public class TourLogService extends Logging implements ITourLogService {
                 }
         );
 
-        //todo check version
-
         TourLog newTourLog = new TourLog(newTourLogReq.getTimeStamp(), newTourLogReq.getComment(),
                                             newTourLogReq.getDifficulty(), newTourLogReq.getTotalTimeMinutes(),
                                             newTourLogReq.getRating(), linkedTour);
@@ -133,10 +131,8 @@ public class TourLogService extends Logging implements ITourLogService {
 
         this.tourLogRepository.flush();
 
-        //todo fetch the associatedTour before
         TourStatsModel tourStatsModel = this.tourService.calculateTourStats(associatedTour);
 
-        //todo calculate stats
         TourLogManipulationResponseDto tourLogManipulationResponseDto = new TourLogManipulationResponseDto();
         tourLogManipulationResponseDto.setTourStats(
                 new TourStatsDto(
