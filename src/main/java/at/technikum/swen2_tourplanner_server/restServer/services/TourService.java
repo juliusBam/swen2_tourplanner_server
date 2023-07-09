@@ -40,7 +40,13 @@ public class TourService extends Logging implements ITourService {
     @Transactional
     public TourResponseDto updateTour(TourDto tourDto) {
 
-        this.tourValidator.validateUpdate(tourDto);
+        try {
+            this.tourValidator.validateUpdate(tourDto);
+        } catch (Exception e) {
+            logger.error("Error creating tour [" + e.getMessage() + "]");
+            throw e;
+        }
+
 
         Tour existingTour = this.tourRepository.findById(tourDto.getId()).orElseThrow(
                 () -> {
@@ -176,7 +182,13 @@ public class TourService extends Logging implements ITourService {
             throw new RecordCreationErrorExc("Tour id cannot be set on creation");
         }
 
-        this.tourValidator.validateCreation(tourDto);
+        try {
+            this.tourValidator.validateCreation(tourDto);
+        } catch (Exception e) {
+            logger.error("Error creating tour [" + e.getMessage() + "]");
+            throw e;
+        }
+
 
         Tour newTour = new Tour(
                 tourDto.getName(),
